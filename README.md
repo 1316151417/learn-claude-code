@@ -1,4 +1,4 @@
-# Learn Claude Code
+# Learn Claude Code - Bash is all you & agent need
 
 > **Disclaimer**: This is an independent educational project by [shareAI Lab](https://github.com/shareAI-lab). It is not affiliated with, endorsed by, or sponsored by Anthropic. "Claude Code" is a trademark of Anthropic.
 
