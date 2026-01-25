@@ -65,12 +65,23 @@ SYSTEM = f"""你是一个位于 {os.getcwd()} 的 CLI 代理。使用 bash 命�
 子代理在隔离中运行，仅返回最终摘要。"""
 
 
+def fix_surrogates(text):
+    """修复包含代理字符的字符串"""
+    if not text:
+        return text
+    # 编码为 utf-8，忽略错误，再解码回来
+    return text.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
+
+
 def chat(prompt, history=None):
     """
     一个函数中的完整代理循环。
     """
     if history is None:
         history = []
+
+    # 清理输入中的编码问题
+    prompt = fix_surrogates(prompt)
 
     # 添加用户消息
     history.append({"role": "user", "content": prompt})
