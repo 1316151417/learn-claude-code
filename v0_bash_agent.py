@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 v0_bash_agent.py - Mini Claude Code: Bash 就是一切 (~50 行核心代码)
 
