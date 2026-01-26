@@ -25,10 +25,10 @@ load_dotenv(override=True)
 
 # 初始化 OpenAI 客户端（兼容智谱 API）
 client = OpenAI(
-    api_key=os.getenv("ZHIPU_API_KEY", os.getenv("ANTHROPIC_API_KEY")),
+    api_key=os.getenv("ZHIPU_API_KEY", "your_api_key_here"),
     base_url=os.getenv("ZHIPU_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
 )
-MODEL = os.getenv("MODEL_ID", "glm-4-flash")
+MODEL = os.getenv("MODEL_ID", "glm-4.7")
 
 # 唯一的工具，可以做任何事情
 TOOL = {
