@@ -1,2 +1,8 @@
 # 下载吴恩达agent课程命令
 yt-dlp --cookies cookies.txt --write-subs --sub-langs all --skip-download https://www.bilibili.com/video/BV1DfrdByE2H
+
+# 抓合集
+yt-dlp --cookies cookies.txt --write-subs --sub-langs all --skip-download --yes-playlist https://www.bilibili.com/video/BV16YC3BrEDz
+
+# 转src
+--convert-subs srt
