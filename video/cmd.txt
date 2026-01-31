@@ -1,0 +1,2 @@
+# 下载吴恩达agent课程命令
+yt-dlp --cookies cookies.txt --write-subs --sub-langs all --skip-download https://www.bilibili.com/video/BV1DfrdByE2H
