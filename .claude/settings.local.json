@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"Get-ChildItem ''*.ai-zh.srt'' | ForEach-Object { $newName = $_Name -replace ''^【吴恩达】2026年公认最好的【Agent智能体】教程！大模型入门到进阶，一套全解决！Agentic AI—附带课件代码 '', ''''; if \\($_Name -ne $newName\\) { Rename-Item $_FullName -NewName $newName } }\")",
+      "Bash(python -c \"\nimport os\nimport glob\n\nprefix = ''【吴恩达】2026年公认最好的【Agent智能体】教程！大模型入门到进阶，一套全解决！Agentic AI—附带课件代码 ''\n\nfor old_name in glob.glob\\(''*.ai-zh.srt''\\):\n    if old_name.startswith\\(prefix\\):\n        new_name = old_name[len\\(prefix\\):]\n        os.rename\\(old_name, new_name\\)\n        print\\(f''{old_name} -> {new_name}''\\)\n\")"
+    ]
+  }
+}
