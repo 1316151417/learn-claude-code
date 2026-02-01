@@ -208,20 +208,13 @@ TODO = TodoManager()
 
 SYSTEM = f"""你是位于 {WORKDIR} 的编码代理。
 
-工作流程：
-1. 先用 TodoWrite 创建任务计划（必需！）
-2. 标记当前任务为 in_progress
-3. 使用工具执行任务
-4. 完成后标记为 completed
-5. 继续下一个任务
+循环：规划 -> 使用工具行动 -> 更新 todos -> 报告。
 
 规则：
-- **每个任务都必须先用 TodoWrite 规划**
-- 一次只能有一个任务处于 in_progress 状态
+- 使用 TodoWrite 跟踪多步任务
+- 开始前标记任务为 in_progress，完成后标记为 completed
 - 优先使用工具而非文字。行动，而不只是解释。
-- 完成所有任务后，总结更改内容。
-
-注意：当前是 Windows 环境，常见命令已自动转换（ls→dir, cat→type, grep→findstr）。"""
+- 完成后，总结更改内容。"""
 
 
 # =============================================================================
@@ -229,19 +222,10 @@ SYSTEM = f"""你是位于 {WORKDIR} 的编码代理。
 # =============================================================================
 
 # 在对话开始时显示
-INITIAL_REMINDER = """<reminder>重要：请先使用 TodoWrite 工具创建任务计划，即使对于看似简单的任务也应先规划。
-
-规划格式示例：
-TodoWrite(items=[
-  {"content": "列出目录文件", "status": "in_progress", "activeForm": "正在列出目录文件"},
-  {"content": "读取关键文件", "status": "pending", "activeForm": "准备读取关键文件"},
-  {"content": "总结项目结构", "status": "pending", "activeForm": "准备总结项目结构"}
-])
-
-养成先规划后执行的习惯！</reminder>"""
+INITIAL_REMINDER = "<reminder>对多步任务使用 TodoWrite。</reminder>"
 
 # 如果模型有一段时间没有更新 todos，则显示
-NAG_REMINDER = "<reminder>10+ 轮没有更新 todo。请更新 todos。</reminder>"
+NAG_REMINDER = "<reminder>10+ 轮没有 todo 更新。请更新 todos。</reminder>"
 
 
 # =============================================================================
@@ -254,7 +238,7 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "bash",
-            "description": "运行 shell 命令。用于：ls, find, grep, git, npm, python 等。（Windows 上会自动转换 Unix 命令：ls→dir, cat→type, grep→findstr）",
+            "description": "运行 shell 命令。用于：ls, find, grep, git, npm, python 等",
             "parameters": {
                 "type": "object",
                 "properties": {
