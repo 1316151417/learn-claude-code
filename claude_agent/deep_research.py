@@ -53,8 +53,7 @@ async def deep_research(topic: str):
 
     options = ClaudeAgentOptions(
         system_prompt=system_prompt,
-        # 不限制工具，让 Claude 自主选择
-        # allowed_tools=["web_search", "read", "bash"],
+        allowed_tools=["WebSearch", "WebFetch", "Read", "Write", "Bash"],
     )
 
     full_prompt = f"研究主题: {topic}\n\n请进行深入研究，提供全面的分析。"
@@ -64,6 +63,8 @@ async def deep_research(topic: str):
         if isinstance(message, dict):
             msg_type = message.get("type", "")
             content = message.get("content", "")
+
+            print(f"zj debug {msg_type} {content}")
 
             if msg_type == "text" or isinstance(content, str):
                 print(content, end="", flush=True)
