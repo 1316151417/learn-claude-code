@@ -5,8 +5,27 @@ from langchain.agents import create_agent
 from langchain.tools import tool, ToolRuntime
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
-from langchain.agents.structured_output import ToolStrategy
 from langgraph.checkpoint.memory import InMemorySaver
+
+from langchain_core.callbacks import BaseCallbackHandler
+import json
+
+class LLMTraceHandler(BaseCallbackHandler):
+
+    def on_llm_start(self, serialized, prompts, **kwargs):
+        print("\n========== LLM REQUEST ==========")
+        for i, p in enumerate(prompts):
+            print(f"\n--- Prompt {i} ---")
+            print(p)
+
+    def on_llm_end(self, response, **kwargs):
+        print("\n========== LLM RAW RESPONSE ==========")
+        try:
+            print(json.dumps(response.dict(), ensure_ascii=False, indent=2))
+        except:
+            print(response)
+
+trace_handler = LLMTraceHandler()
 
 load_dotenv()
 api_base = os.getenv("ZHIPU_BASE_URL")
@@ -52,7 +71,10 @@ SYSTEM_PROMPT = """
 始终严格按顺序调用工具，并正确传递参数。
 """
 
-config = {"configurable": {"thread_id": "1"}}
+config = {
+    "configurable": {"thread_id": "1"},
+    "callbacks": [trace_handler]
+}
 
 agent = create_agent(
     llm,
@@ -67,28 +89,3 @@ response = agent.invoke(
     config=config,
     context=Context(user_name="杨苗")
 )
-
-def print_agent_trace(messages):
-    for msg in messages:
-        cls = msg.__class__.__name__
-        content = getattr(msg, "content", None) or ""
-        print(f"--- {cls} ---")
-        # 内容
-        print(f"content: {content.strip()!r}")
-
-        # 如果是 AIMessage，看看 tool_calls
-        tool_calls = getattr(msg, "tool_calls", None)
-        if tool_calls:
-            for call in tool_calls:
-                name = call.get("name")
-                args = call.get("args")
-                print(f"tool_call -> name: {name}, args: {args}")
-
-        # 如果是 ToolMessage，把 tool结果也显示
-        if cls == "ToolMessage":
-            name = getattr(msg, "name", None)
-            tool_res = getattr(msg, "content", "")
-            print(f"tool_result -> tool: {name}, result: {tool_res.strip()!r}")
-        print()
-
-print_agent_trace(response['messages'])
