@@ -6,6 +6,7 @@ from langchain.tools import tool, ToolRuntime
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
+from langchain.agents.structured_output import ToolStrategy
 
 from langchain_core.callbacks import BaseCallbackHandler
 import json
@@ -56,6 +57,12 @@ class Context:
     """自定义上下文结构"""
     user_name: str
 
+@dataclass
+class ResponseFormat:
+    """智能体的返回结构"""
+    punny_response: str
+    weather_conditions: str | None = None
+
 @tool
 def get_user_city(runtime: ToolRuntime[Context]):
     """获取用户所在城市"""
@@ -85,6 +92,7 @@ agent = create_agent(
     system_prompt=SYSTEM_PROMPT,
     tools=[get_user_city, get_weather_for_city],
     context_schema=Context,
+    response_format=ToolStrategy(ResponseFormat),
     checkpointer=checkpointer
 )
 
