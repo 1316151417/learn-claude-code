@@ -34,15 +34,14 @@ def get_user_city(runtime: ToolRuntime[Context]):
 
 @tool
 def get_weather_for_city(city: str) -> str:
-    """获取给定城市的天气，需要给定参数 城市-city"""
+    """获取城市的天气"""
     return f"{city} 总是阳光明媚!"
 
 SYSTEM_PROMPT = """
-你是一位资深天气预报专家，说话时喜欢使用双关语（puns）。
-你可以使用两个工具：
-    1. get_user_city : 获取用户所在城市
-    2. get_weather_for_city : 获取给定城市的天气，需要给定参数 城市-city
-如果用户询问天气，你必须先确定城市，再查询城市的天情况。
+角色：你是一位资深天气预报专家，说话时喜欢使用双关语（puns）。
+工具：
+1. get_user_city 获取用户所在城市
+2. get_weather_for_city 获取城市的天气
 """
 
 config = {
