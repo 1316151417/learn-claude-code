@@ -10,18 +10,20 @@ from langchain_core.messages import ToolMessage
 class LLMTraceHandler(BaseCallbackHandler):
     """追踪 LLM 和 Tool 调用过程的回调处理器"""
 
-    def __init__(self, multiline: bool = False, show_tools: bool = False, max_length: int = 100):
+    def __init__(self, multiline: bool = False, show_tools: bool = False, show_prompt: bool = False, max_length: int = 100):
         """
         初始化追踪器
 
         Args:
             multiline: 是否多行显示详细输出（默认 False，简洁模式）
             show_tools: 是否显示工具 schema（默认 False）
+            show_prompt: 是否显示 LLM 的完整 prompt（默认 True）
             max_length: 文本最大显示长度（默认 100）
         """
         super().__init__()
         self.multiline = multiline
         self.show_tools = show_tools
+        self.show_prompt = show_prompt
         self.max_length = max_length
         self._tool_depth = 0
 
@@ -65,10 +67,65 @@ class LLMTraceHandler(BaseCallbackHandler):
         # 其他情况转为字符串
         return str(output)
 
+    def _get_tools_info(self, kwargs: dict) -> list:
+        """从 kwargs 中获取工具信息"""
+        # 尝试从 invocation_params 获取
+        if 'invocation_params' in kwargs:
+            invocation_params = kwargs['invocation_params']
+            tools_info = invocation_params.get('tools')
+            if tools_info:
+                return tools_info
+        return []
+
     def on_llm_start(self, serialized, prompts, **kwargs):
         """LLM 开始调用时触发"""
-        if self.multiline:
-            print("┌─ LLM Start ──────────────────────────────────")
+        if self.multiline or self.show_prompt:
+            print("┌─ LLM Input ──────────────────────────────────")
+
+            # 显示工具 schema
+            if self.show_tools:
+                tools_info = self._get_tools_info(kwargs)
+                if tools_info:
+                    print("│ Tools:")
+                    for tool in tools_info:
+                        # 尝试多种方式获取工具信息
+                        name = 'unknown'
+                        desc = ''
+                        params = {}
+
+                        if isinstance(tool, dict):
+                            # 尝试直接获取
+                            name = tool.get('name') or tool.get('function', {}).get('name', 'unknown')
+                            desc = tool.get('description') or tool.get('function', {}).get('description', '')
+                            params = tool.get('parameters') or tool.get('function', {}).get('parameters', {})
+
+                            # 如果还是 unknown，尝试从其他字段获取
+                            if name == 'unknown':
+                                # 检查是否有 type 字段
+                                if 'type' in tool:
+                                    name = f"[{tool['type']}]"
+                                # 最后手段：显示字典的 keys
+                                else:
+                                    keys = list(tool.keys())[:3]
+                                    name = f"tool({', '.join(keys)})"
+
+                        # 显示工具名称和描述
+                        if len(desc) > 70:
+                            desc = desc[:67] + "..."
+                        print(f"│   • {name}")
+                        if desc:
+                            print(f"│     {desc}")
+
+                        # 显示参数信息
+                        if params and isinstance(params, dict):
+                            properties = params.get('properties', {})
+                            if properties:
+                                param_names = list(properties.keys())
+                                if param_names:
+                                    print(f"│     参数: {', '.join(param_names)}")
+                    print("│")
+
+            # 显示 prompt 内容
             for p in prompts:
                 for line in p.split("\n"):
                     if line.strip():
