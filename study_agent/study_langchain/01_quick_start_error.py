@@ -29,8 +29,8 @@ class ResponseFormat:
 def get_user_city(runtime: ToolRuntime[Context]):
     """获取用户所在城市"""
     user_name = runtime.context.user_name
-    city = "北京市" if user_name == "周杰" else "四川市"
-    return f"用户在 {city}"
+    city = "北京" if user_name == "周杰" else "四川"
+    return city
 
 @tool
 def get_weather_for_city(city: str) -> str:

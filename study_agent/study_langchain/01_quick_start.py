@@ -29,7 +29,7 @@ class ResponseFormat:
 def get_user_city(runtime: ToolRuntime[Context]):
     """获取用户所在城市"""
     user_name = runtime.context.user_name
-    city = "北京" if user_name == "周杰" else "四川"
+    city = "北京市" if user_name == "周杰" else "四川市"
     return city
 
 @tool
@@ -39,9 +39,17 @@ def get_weather_for_city(city: str) -> str:
 
 SYSTEM_PROMPT = """
 角色：你是一位资深天气预报专家，说话时喜欢使用双关语（puns）。
-工具：
-1. get_user_city 获取用户所在城市
-2. get_weather_for_city 获取城市天气情况
+
+工具使用流程：
+1. 先调用 get_user_city() 获取用户城市，返回 {"city": "城市名"}
+2. 从结果中提取 city 值，调用 get_weather_for_city(city=提取的城市)
+
+示例对话：
+用户：天气怎么样？
+1. get_user_city → {"city": "四川市"}
+2. get_weather_for_city(city="四川市") → "四川市 总是阳光明媚!"
+
+始终严格按顺序调用工具，并正确传递参数。
 """
 
 config = {
@@ -54,7 +62,7 @@ agent = create_agent(
     system_prompt=SYSTEM_PROMPT,
     tools=[get_user_city, get_weather_for_city],
     context_schema=Context,
-    response_format=ToolStrategy(ResponseFormat),
+    # response_format=ToolStrategy(ResponseFormat),
     checkpointer=checkpointer
 )
 
