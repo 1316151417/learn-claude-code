@@ -1,26 +1,16 @@
-import os
-from dotenv import load_dotenv
 from dataclasses import dataclass
 from langchain.agents import create_agent
 from langchain.tools import tool, ToolRuntime
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.structured_output import ToolStrategy
 
 from trace_handler import LLMTraceHandler
+from llm_config import get_default_llm
 
 trace_handler = LLMTraceHandler()
 
-load_dotenv()
-api_base = os.getenv("ZHIPU_BASE_URL")
-api_key = os.getenv("ZHIPU_API_KEY")
-
-llm = ChatOpenAI(
-    openai_api_base=api_base,
-    openai_api_key=api_key,
-    model="glm-4.7",
-)
+llm = get_default_llm()
 
 checkpointer = InMemorySaver()
 
