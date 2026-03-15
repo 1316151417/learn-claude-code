@@ -4,8 +4,6 @@ LLM 配置模块 - 统一管理 LLM 初始化
 import os
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
-from langchain_openai import ChatOpenAI
-from langchain_deepseek import ChatDeepSeek
 
 # 加载环境变量
 load_dotenv()
@@ -37,11 +35,12 @@ def get_deepseek_llm(**kwargs):
         **kwargs
     )
 
-def get_zhipu_llm(**kwargs) -> ChatOpenAI:
+def get_zhipu_llm(**kwargs):
     print(f"初始化智谱模型(base_url:{zhipu_api_base}, model={zhipu_model})")
-    return ChatOpenAI(
-        openai_api_base=zhipu_api_base,
-        openai_api_key=zhipu_api_key,
+    return init_chat_model(
+        model_provider="openai",
+        base_url=zhipu_api_base,
+        api_key=zhipu_api_key,
         model=zhipu_model,
         **kwargs
     )
