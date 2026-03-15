@@ -11,19 +11,30 @@ from langchain_core.callbacks import BaseCallbackHandler
 import json
 
 class LLMTraceHandler(BaseCallbackHandler):
-
     def on_llm_start(self, serialized, prompts, **kwargs):
-        print("\n========== LLM REQUEST ==========")
-        for i, p in enumerate(prompts):
-            print(f"\n--- Prompt {i} ---")
-            print(p)
-
+        for p in prompts:
+            for line in p.split("\n"):
+                if line.startswith("Human:"):
+                    print("====================")
+                    print(f"\nUser → {line.replace('Human:', '').strip()}")
     def on_llm_end(self, response, **kwargs):
-        print("\n========== LLM RAW RESPONSE ==========")
-        try:
-            print(json.dumps(response.dict(), ensure_ascii=False, indent=2))
-        except:
-            print(response)
+        gen = response.generations[0][0]
+        msg = gen.message
+        # LLM文本
+        if msg.content:
+            print(f"LLM  → {msg.content}")
+        # Tool调用
+        tool_calls = getattr(msg, "tool_calls", None)
+        if tool_calls:
+            for t in tool_calls:
+                name = t.get("name")
+                args = t.get("args")
+                print(f"    LLM  → {name}({args})")
+    def on_tool_start(self, serialized, input_str, **kwargs):
+        name = serialized.get("name", "tool")
+        print(f"Tool → {name}({input_str})")
+    def on_tool_end(self, output, **kwargs):
+        print(f"    Tool → {output}")
 
 trace_handler = LLMTraceHandler()
 
@@ -48,27 +59,20 @@ class Context:
 def get_user_city(runtime: ToolRuntime[Context]):
     """获取用户所在城市"""
     user_name = runtime.context.user_name
-    city = "北京市" if user_name == "周杰" else "四川市"
-    return {"city": city}
+    city = "北京" if user_name == "周杰" else "四川"
+    return city
 
 @tool
 def get_weather_for_city(city: str) -> str:
-    """获取给定城市的天气，需要给定参数 城市-city"""
+    """获取城市的天气"""
     return f"{city} 总是阳光明媚!"
 
 SYSTEM_PROMPT = """
 角色：你是一位资深天气预报专家，说话时喜欢使用双关语（puns）。
 
 工具使用流程：
-1. 先调用 get_user_city() 获取用户城市，返回 {"city": "城市名"}
-2. 从结果中提取 city 值，调用 get_weather_for_city(city=提取的城市)
-
-示例对话：
-用户：天气怎么样？
-1. get_user_city → {"city": "四川市"}
-2. get_weather_for_city(city="四川市") → "四川市 总是阳光明媚!"
-
-始终严格按顺序调用工具，并正确传递参数。
+1. get_user_city() 获取用户所在城市
+2. get_weather_for_city 获取城市天气情况 
 """
 
 config = {
