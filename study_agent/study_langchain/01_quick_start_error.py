@@ -8,7 +8,7 @@ from langchain.agents.structured_output import ToolStrategy
 from trace_handler import LLMTraceHandler
 from llm_config import get_default_llm
 
-trace_handler = LLMTraceHandler()
+trace_handler = LLMTraceHandler(show_prompt=True, show_tools=True)
 
 llm = get_default_llm()
 
@@ -21,7 +21,7 @@ class Context:
 
 @dataclass
 class ResponseFormat:
-    """智能体的返回结构"""
+    """将用户所在城市的天气情况，转换为结构化输出，包括 天气情况的双关语回答(punny_response)和普通回答(weather_conditions)"""
     punny_response: str
     weather_conditions: str | None = None
 
@@ -43,7 +43,7 @@ SYSTEM_PROMPT = """
 工具使用流程：
 1. 先调用 get_user_city() 获取用户城市，返回 {"city": "城市名"}
 2. 从用户城市结果中提取 city 值，调用 get_weather_for_city(city=提取的城市)
-3. 根据天气情况结果，最后格式化输出 {"punny_response": "天气情况的双关语回答", "weather_conditions": "天气情况的正常回答"}
+3. 获取到天气情况后，调用ResponseFormat工具进行格式化输出 {"punny_response": "天气情况的双关语回答", "weather_conditions": "天气情况的正常回答"}
 
 示例对话：
 用户：天气怎么样？
@@ -52,6 +52,9 @@ SYSTEM_PROMPT = """
 3. ResponseFormat → {"punny_response": "四川天气晴，心情也晴！", "weather_conditions": "四川市 总是阳光明媚!"}
 
 始终严格按顺序调用工具，并正确传递参数。
+
+# 重要：get_weather_for_city 工具必须传入参数 用户所在城(city)
+# 重要：最后一步必须调用 ResponseFormat 才能结束（不调用工具就是结束）
 """
 
 config = {
