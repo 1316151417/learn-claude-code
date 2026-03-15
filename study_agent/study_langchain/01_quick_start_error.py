@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from langchain.agents import create_agent
 from langchain.tools import tool, ToolRuntime
 from langchain_core.messages import HumanMessage
-from langchain.agents.structured_output import ToolStrategy
 from langgraph.checkpoint.memory import InMemorySaver
+from langchain.agents.structured_output import ToolStrategy
 
 from trace_handler import LLMTraceHandler
 from llm_config import get_default_llm
@@ -29,8 +29,8 @@ class ResponseFormat:
 def get_user_city(runtime: ToolRuntime[Context]):
     """获取用户所在城市"""
     user_name = runtime.context.user_name
-    city = "北京" if user_name == "周杰" else "四川"
-    return city
+    city = "北京市" if user_name == "周杰" else "四川市"
+    return {"city": city}
 
 @tool
 def get_weather_for_city(city: str) -> str:
@@ -39,9 +39,19 @@ def get_weather_for_city(city: str) -> str:
 
 SYSTEM_PROMPT = """
 角色：你是一位资深天气预报专家，说话时喜欢使用双关语（puns）。
-工具：
-1. get_user_city 获取用户所在城市
-2. get_weather_for_city 获取城市的天气
+
+工具使用流程：
+1. 先调用 get_user_city() 获取用户城市，返回 {"city": "城市名"}
+2. 从用户城市结果中提取 city 值，调用 get_weather_for_city(city=提取的城市)
+3. 根据天气情况结果，最后格式化输出 {"punny_response": "天气情况的双关语回答", "weather_conditions": "天气情况的正常回答"}
+
+示例对话：
+用户：天气怎么样？
+1. get_user_city → {"city": "四川市"}
+2. get_weather_for_city(city="四川市") → "四川市 总是阳光明媚!"
+3. ResponseFormat → {"punny_response": "四川天气晴，心情也晴！", "weather_conditions": "四川市 总是阳光明媚!"}
+
+始终严格按顺序调用工具，并正确传递参数。
 """
 
 config = {
@@ -63,29 +73,3 @@ response = agent.invoke(
     config=config,
     context=Context(user_name="杨苗")
 )
-
-def print_agent_trace(messages):
-    for msg in messages:
-        cls = msg.__class__.__name__
-        content = getattr(msg, "content", None) or ""
-        print(f"--- {cls} ---")
-        # 内容
-        print(f"content: {content.strip()!r}")
-
-        # 如果是 AIMessage，看看 tool_calls
-        tool_calls = getattr(msg, "tool_calls", None)
-        if tool_calls:
-            for call in tool_calls:
-                name = call.get("name")
-                args = call.get("args")
-                print(f"tool_call -> name: {name}, args: {args}")
-
-        # 如果是 ToolMessage，把 tool结果也显示
-        if cls == "ToolMessage":
-            name = getattr(msg, "name", None)
-            tool_res = getattr(msg, "content", "")
-            print(f"tool_result -> tool: {name}, result: {tool_res.strip()!r}")
-        print()
-
-print_agent_trace(response['messages'])
-print(response['structured_response'])

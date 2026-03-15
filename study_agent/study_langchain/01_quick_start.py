@@ -30,7 +30,7 @@ def get_user_city(runtime: ToolRuntime[Context]):
     """获取用户所在城市"""
     user_name = runtime.context.user_name
     city = "北京市" if user_name == "周杰" else "四川市"
-    return city
+    return {"city": city}
 
 @tool
 def get_weather_for_city(city: str) -> str:
@@ -42,7 +42,7 @@ SYSTEM_PROMPT = """
 
 工具使用流程：
 1. 先调用 get_user_city() 获取用户城市，返回 {"city": "城市名"}
-2. 从结果中提取 city 值，调用 get_weather_for_city(city=提取的城市)
+2. 从用户城市结果中提取 city 值，调用 get_weather_for_city(city=提取的城市)
 
 示例对话：
 用户：天气怎么样？
@@ -62,7 +62,6 @@ agent = create_agent(
     system_prompt=SYSTEM_PROMPT,
     tools=[get_user_city, get_weather_for_city],
     context_schema=Context,
-    # response_format=ToolStrategy(ResponseFormat),
     checkpointer=checkpointer
 )
 
