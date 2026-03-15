@@ -8,35 +8,7 @@ from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.structured_output import ToolStrategy
 
-from langchain_core.callbacks import BaseCallbackHandler
-import json
-
-class LLMTraceHandler(BaseCallbackHandler):
-    def on_llm_start(self, serialized, prompts, **kwargs):
-        print("==========llm start==========")
-        for p in prompts:
-            for line in p.split("\n"):
-                print(line)
-    def on_llm_end(self, response, **kwargs):
-        print("==========llm end==========")
-        gen = response.generations[0][0]
-        msg = gen.message
-        # LLM文本
-        if msg.content:
-            print(f"LLM  → {msg.content}")
-        # Tool调用
-        tool_calls = getattr(msg, "tool_calls", None)
-        if tool_calls:
-            for t in tool_calls:
-                name = t.get("name")
-                args = t.get("args")
-                print(f"    LLM  → {name}({args})")
-    def on_tool_start(self, serialized, input_str, **kwargs):
-        print("==========tool exc==========")
-        name = serialized.get("name", "tool")
-        print(f"Tool → {name}({input_str})")
-    def on_tool_end(self, output, **kwargs):
-        print(f"    Tool → {output}")
+from trace_handler import LLMTraceHandler
 
 trace_handler = LLMTraceHandler()
 

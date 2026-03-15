@@ -8,6 +8,10 @@ from langchain_core.messages import HumanMessage
 from langchain.agents.structured_output import ToolStrategy
 from langgraph.checkpoint.memory import InMemorySaver
 
+from trace_handler import LLMTraceHandler
+
+trace_handler = LLMTraceHandler()
+
 load_dotenv()
 api_base = os.getenv("ZHIPU_BASE_URL")
 api_key = os.getenv("ZHIPU_API_KEY")
@@ -51,7 +55,10 @@ SYSTEM_PROMPT = """
 如果用户询问天气，你必须先确定城市，再查询城市的天情况。
 """
 
-config = {"configurable": {"thread_id": "1"}}
+config = {
+    "configurable": {"thread_id": "1"},
+    "callbacks": [trace_handler]
+}
 
 agent = create_agent(
     llm,
