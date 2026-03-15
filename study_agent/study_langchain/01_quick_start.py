@@ -12,12 +12,12 @@ import json
 
 class LLMTraceHandler(BaseCallbackHandler):
     def on_llm_start(self, serialized, prompts, **kwargs):
+        print("==========llm start==========")
         for p in prompts:
             for line in p.split("\n"):
-                if line.startswith("Human:"):
-                    print("====================")
-                    print(f"\nUser → {line.replace('Human:', '').strip()}")
+                print(line)
     def on_llm_end(self, response, **kwargs):
+        print("==========llm end==========")
         gen = response.generations[0][0]
         msg = gen.message
         # LLM文本
@@ -31,6 +31,7 @@ class LLMTraceHandler(BaseCallbackHandler):
                 args = t.get("args")
                 print(f"    LLM  → {name}({args})")
     def on_tool_start(self, serialized, input_str, **kwargs):
+        print("==========tool exc==========")
         name = serialized.get("name", "tool")
         print(f"Tool → {name}({input_str})")
     def on_tool_end(self, output, **kwargs):
@@ -69,9 +70,8 @@ def get_weather_for_city(city: str) -> str:
 
 SYSTEM_PROMPT = """
 角色：你是一位资深天气预报专家，说话时喜欢使用双关语（puns）。
-
-工具使用流程：
-1. get_user_city() 获取用户所在城市
+工具：
+1. get_user_city 获取用户所在城市
 2. get_weather_for_city 获取城市天气情况 
 """
 
