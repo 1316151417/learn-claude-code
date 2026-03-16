@@ -112,15 +112,35 @@ if response.interrupts:
         # 编辑：修改工具参数后执行
         print("\n请输入新的工具参数 (JSON格式):")
         try:
-            new_args = json.loads(input("新参数: ").strip())
-            print("\n✓ 已更新参数，继续执行...")
+            input_str = input("新参数: ").strip()
+            # 尝试标准解析
+            try:
+                new_args = json.loads(input_str)
+            except json.JSONDecodeError:
+                # 如果失败，尝试修复常见问题（如中文引号）
+                input_str = input_str.replace("'", '"').replace('"', '"').replace('"', '"')
+                new_args = json.loads(input_str)
+
+            print(f"\n✓ 已更新参数为: {json.dumps(new_args, ensure_ascii=False)}，继续执行...")
+            # 注意：edit 类型需要传入 edited_action，包含 name 和 args
             response = agent.invoke(
-                Command(resume={"decisions": [{"type": "edit", "args": new_args}]}),
+                Command(resume={
+                    "decisions": [{
+                        "type": "edit",
+                        "edited_action": {
+                            "name": tool_name,
+                            "args": new_args
+                        }
+                    }]
+                }),
                 config=config,
                 version="v2"
             )
-        except json.JSONDecodeError:
-            print("✗ JSON格式错误，请重新运行")
+        except json.JSONDecodeError as e:
+            print(f"✗ JSON格式错误: {e}")
+            print(f"  请确保格式正确，例如: {{\"city\": \"北京市\"}}")
+        except Exception as e:
+            print(f"✗ 处理编辑时出错: {e}")
 
     elif user_input == "reject":
         # 拒绝：取消工具调用
