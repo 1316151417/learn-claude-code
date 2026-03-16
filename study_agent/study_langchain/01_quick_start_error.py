@@ -6,11 +6,11 @@ from langchain.tools import tool, ToolRuntime
 from langgraph.checkpoint.memory import InMemorySaver
 
 from trace_handler import LLMTraceHandler
-from llm_config import get_default_llm
+from llm_config import get_default_llm, get_deepseek_llm, get_zhipu_llm
 
 trace_handler = LLMTraceHandler()
 
-llm = get_default_llm()
+llm = get_zhipu_llm()
 
 checkpointer = InMemorySaver()
 
