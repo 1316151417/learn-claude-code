@@ -55,7 +55,16 @@ class LLMTraceHandler(BaseCallbackHandler):
         """提取工具的实际返回值"""
         # 如果是 ToolMessage 对象，提取 content
         if isinstance(output, ToolMessage):
-            return output.content
+            content = output.content
+            # MCP 工具返回的是 list，需要特殊处理
+            if isinstance(content, list):
+                # 尝试提取 text 字段
+                for item in content:
+                    if isinstance(item, dict) and 'text' in item:
+                        return item['text']
+                # 如果没有 text 字段，返回整个 list 的字符串
+                return str(content)
+            return str(content)
         # 如果是 dict，尝试提取 content 或直接转为字符串
         if isinstance(output, dict):
             if 'content' in output:

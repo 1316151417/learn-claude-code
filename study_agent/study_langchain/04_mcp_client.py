@@ -1,6 +1,8 @@
 import asyncio
 from langchain_mcp_adapters.client import MultiServerMCPClient  
 from langchain.agents import create_agent
+from llm_config import get_default_llm, get_deepseek_llm, get_zhipu_llm
+from trace_handler import LLMTraceHandler
 
 async def main():
     client = MultiServerMCPClient(
@@ -20,15 +22,22 @@ async def main():
     )
 
     tools = await client.get_tools()
+    
+    config = {
+        "configurable": {"thread_id": "1"},
+        "callbacks": [LLMTraceHandler(show_prompt=True, show_tools=True)]
+    }
     agent = create_agent(
-        "claude-sonnet-4-6",
-        tools  
+        model=get_default_llm(),
+        tools=tools
     )
     math_response = await agent.ainvoke(
-        {"messages": [{"role": "user", "content": "what's (3 + 5) x 12?"}]}
+        {"messages": [{"role": "user", "content": "what's (3 + 5) x 12?"}]},
+        config=config
     )
     weather_response = await agent.ainvoke(
-        {"messages": [{"role": "user", "content": "what is the weather in nyc?"}]}
+        {"messages": [{"role": "user", "content": "what is the weather in nyc?"}]},
+        config=config
     )
     print(math_response)
     print(weather_response)
