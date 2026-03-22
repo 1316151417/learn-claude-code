@@ -1,5 +1,6 @@
 from langchain.tools import tool
-from langchain.chat_models import init_chat_model
+from langchain.messages import HumanMessage
+
 
 from common.llm_config import get_default_llm
 
@@ -45,3 +46,6 @@ def divide(a: int, b: int) -> float:
 tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
 model_with_tools = model.bind_tools(tools)
+
+response = model_with_tools.invoke([HumanMessage(content="What's 3 + 5?")])
+print(response)
