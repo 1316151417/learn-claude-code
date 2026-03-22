@@ -1,8 +1,10 @@
 from langchain.tools import tool
 from common.llm_config import get_default_llm
 
+# Step 1: Define tools and model
 model = get_default_llm()
 
+# Define tools
 @tool
 def multiply(a: int, b: int) -> int:
     """Multiply `a` and `b`.
@@ -30,9 +32,12 @@ def divide(a: int, b: int) -> float:
     """
     return a / b
 
+# Augment the LLM with tools
 tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
 model_with_tools = model.bind_tools(tools)
+
+# Step 2: Define state
 
 from langchain.messages import AnyMessage
 from typing_extensions import TypedDict, Annotated
@@ -42,9 +47,12 @@ class MessagesState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
     llm_calls: int
 
+# Step 3: Define model node
 from langchain.messages import SystemMessage
+
 def llm_call(state: dict):
     """LLM decides whether to call a tool or not"""
+
     return {
         "messages": [
             model_with_tools.invoke(
@@ -59,6 +67,7 @@ def llm_call(state: dict):
         "llm_calls": state.get('llm_calls', 0) + 1
     }
 
+# Step 4: Define tool node
 from langchain.messages import ToolMessage
 
 def tool_node(state: dict):
@@ -70,11 +79,11 @@ def tool_node(state: dict):
         result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
     return {"messages": result}
 
-
-
+# Step 5: Define logic to determine whether to end
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
 
+# Conditional edge function to route to the tool node or end based upon whether the LLM made a tool call
 def should_continue(state: MessagesState) -> Literal["tool_node", END]:
     """Decide if we should continue the loop or stop based upon whether the LLM made a tool call"""
 
@@ -88,7 +97,7 @@ def should_continue(state: MessagesState) -> Literal["tool_node", END]:
     # Otherwise, we stop (reply to the user)
     return END
 
-
+# Step 6: Build agent
 # Build workflow
 agent_builder = StateGraph(MessagesState)
 
@@ -108,8 +117,9 @@ agent_builder.add_edge("tool_node", "llm_call")
 # Compile the agent
 agent = agent_builder.compile()
 
-# Show the agent
+
 from IPython.display import Image, display
+# Show the agent
 display(Image(agent.get_graph(xray=True).draw_mermaid_png()))
 
 # Invoke
