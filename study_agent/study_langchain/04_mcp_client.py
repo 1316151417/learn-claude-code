@@ -1,8 +1,8 @@
 import asyncio
 from langchain_mcp_adapters.client import MultiServerMCPClient  
 from langchain.agents import create_agent
-from llm_config import get_default_llm, get_deepseek_llm, get_zhipu_llm
-from trace_handler import LLMTraceHandler
+from common.llm_config import get_default_llm, get_deepseek_llm, get_zhipu_llm
+from common.trace_handler import LLMTraceHandler
 
 async def main():
     client = MultiServerMCPClient(
