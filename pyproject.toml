@@ -9,6 +9,7 @@ dependencies = [
     "claude-agent-sdk>=0.1.47",
     "dotenv>=0.9.9",
     "fastmcp>=3.1.1",
+    "grandalf>=0.8",
     "httpx-sse>=0.4.3",
     "ipython>=9.11.0",
     "langchain>=1.2.12",
