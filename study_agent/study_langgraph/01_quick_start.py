@@ -118,9 +118,25 @@ agent_builder.add_edge("tool_node", "llm_call")
 agent = agent_builder.compile()
 
 
-from IPython.display import Image, display
-# Show the agent
-display(Image(agent.get_graph(xray=True).draw_mermaid_png()))
+# 可视化 agent 流程图
+print("\n=== Agent 流程图 (ASCII) ===")
+try:
+    print(agent.get_graph().print_ascii())
+except Exception as e:
+    print(f"ASCII 可视化失败: {e}")
+
+# 保存为 PNG 文件（需要安装 graphviz 和 pygraphviz）
+try:
+    png_data = agent.get_graph(xray=True).draw_mermaid_png()
+    if png_data:
+        with open("graph.png", "wb") as f:
+            f.write(png_data)
+        print("\n✓ 图已保存到 graph.png")
+    else:
+        print("\n提示: 生成 PNG 需要安装 graphviz 和 pygraphviz")
+except Exception as e:
+    print(f"\n保存图片失败: {e}")
+    print("提示: 运行 'brew install graphviz' 和 'uv pip install pygraphviz'")
 
 # Invoke
 from langchain.messages import HumanMessage
