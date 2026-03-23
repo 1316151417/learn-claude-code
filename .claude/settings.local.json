@@ -6,7 +6,8 @@
       "Bash(ls:*)",
       "WebSearch",
       "Bash(curl -s \"https://www.superannotate.com/blog/llm-agents\")",
-      "Bash(curl -s https://www.superannotate.com/blog/llm-agents)"
+      "Bash(curl -s https://www.superannotate.com/blog/llm-agents)",
+      "Bash(uv run:*)"
     ]
   }
 }
