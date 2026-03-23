@@ -36,7 +36,7 @@ def process_node(state: State):
 def llm_node(state: State):
     """LLM 节点：生成回复"""
     model = get_default_llm()
-    response = model.invoke(state["messages"] if state.messages else [HumanMessage(content=f"介绍{state.topic}")])
+    response = model.invoke(state["messages"] if state.messages else [HumanMessage(content=f"介绍{state.topic}，一句话简短回复")])
     return {"messages": [response], "result": f"LLM分析了{state.topic}"}
 
 
@@ -113,18 +113,24 @@ def main():
         if chunk["type"] == "tasks":
             task = chunk["data"]
             name = task.get('name', 'unknown')
-            event = task.get('event', 'unknown')
-            print(f"  任务 {name}: {event}")
+            # 判断是开始还是结束
+            if 'result' in task:
+                status = "结束"
+            elif 'input' in task:
+                status = "开始"
+            else:
+                status = "unknown"
+            print(f"  任务 {name}: {status}")
 
-    # 7. 多模式混合
-    print("\n【7. 多模式混合】UPDATES + CUSTOM")
-    print("-" * 40)
-    for chunk in graph.stream(initial_state, config, stream_mode=["updates", "custom"], version="v2"):
-        if chunk["type"] == "updates":
-            for node, update in chunk["data"].items():
-                print(f"  [更新] {node}: {update}")
-        elif chunk["type"] == "custom":
-            print(f"  [自定义] {chunk['data']}")
+    # # 7. 多模式混合
+    # print("\n【7. 多模式混合】UPDATES + CUSTOM")
+    # print("-" * 40)
+    # for chunk in graph.stream(initial_state, config, stream_mode=["updates", "custom"], version="v2"):
+    #     if chunk["type"] == "updates":
+    #         for node, update in chunk["data"].items():
+    #             print(f"  [更新] {node}: {update}")
+    #     elif chunk["type"] == "custom":
+    #         print(f"  [自定义] {chunk['data']}")
 
     print("\n" + "=" * 60)
     print("演示完成!")
