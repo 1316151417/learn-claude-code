@@ -21,13 +21,11 @@ class SharedState(TypedDict):
 # --- 子图 ---
 def sub_step1(state: SharedState):
     """子图步骤1：添加前缀"""
-    print(f"  [子图-步骤1] 处理: {state['text']}")
     return {"text": f"[前缀] {state['text']}"}
 
 
 def sub_step2(state: SharedState):
     """子图步骤2：添加后缀"""
-    print(f"  [子图-步骤2] 处理: {state['text']}")
     return {"text": f"{state['text']} [后缀]"}
 
 
@@ -45,13 +43,11 @@ subgraph = (
 # --- 父图 ---
 def parent_node1(state: SharedState):
     """父图节点1：准备输入"""
-    print(f"[父图-节点1] 输入: {state['text']}")
     return {"text": f"处理: {state['text']}"}
 
 
 def parent_node2(state: SharedState):
     """父图节点2：完成处理"""
-    print(f"[父图-节点2] 输出: {state['text']}")
     return {"text": f"完成: {state['text']}"}
 
 
@@ -69,9 +65,10 @@ shared_graph = (
 
 # 运行共享状态模式
 print("\n【运行】共享状态模式:")
-print("-" * 40)
+print("  输入: Hello")
+print("  流程: node1 → 子图(sub1→sub2) → node2")
 result = shared_graph.invoke({"text": "Hello"})
-print(f"\n最终结果: {result['text']}")
+print(f"  输出: {result['text']}")
 
 
 # ==================== 方式2：不同状态 - 在节点中调用子图 ====================
@@ -89,13 +86,11 @@ class SubgraphState(TypedDict):
 
 def sub_transform1(state: SubgraphState):
     """子图转换1"""
-    print(f"  [子图-trans1] input={state['input_text']}")
     return {"processed": f"转换: {state['input_text']}"}
 
 
 def sub_transform2(state: SubgraphState):
     """子图转换2"""
-    print(f"  [子图-trans2] processed={state['processed']}")
     return {"processed": f"{state['processed']} ✓"}
 
 
@@ -118,8 +113,6 @@ class ParentState(TypedDict):
 
 def call_subgraph(state: ParentState):
     """在节点内调用子图，需要转换状态"""
-    print(f"[父图-包装节点] foo={state['foo']}")
-
     # 转换父图状态 -> 子图状态
     subgraph_input = {"input_text": state['foo'], "processed": ""}
 
@@ -139,9 +132,10 @@ wrapper_graph = (
 
 # 运行包装模式
 print("\n【运行】不同状态模式:")
-print("-" * 40)
+print("  输入: foo=World")
+print("  流程: wrapper(内部调用子图 trans1→trans2)")
 result = wrapper_graph.invoke({"foo": "World"})
-print(f"\n最终结果: {result['foo']}")
+print(f"  输出: {result['foo']}")
 
 
 # ==================== 流式输出（查看子图内部）====================
@@ -150,6 +144,7 @@ print("流式输出：查看子图内部执行")
 print("=" * 60)
 
 print("\n【流式运行】共享状态模式:")
+print("  使用 stream_mode='updates' + subgraphs=True 查看子图内部")
 print("-" * 40)
 
 # 使用 v2 格式
