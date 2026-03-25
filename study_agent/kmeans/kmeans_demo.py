@@ -12,8 +12,8 @@ K-means 聚类分析 Demo - 用户查询分类
 uv pip install zhipuai scikit-learn matplotlib numpy
 """
 
-import sys
 import os
+from dotenv import load_dotenv
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
@@ -27,8 +27,12 @@ plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 # ==================== 第一步：初始化智谱 Embedding 客户端 ====================
 print(f"🔄 初始化智谱 AI Embedding 客户端...")
 
+# 加载环境变量
+load_dotenv()
+zhipu_embedding_api_key = os.getenv("ZHIPUAI_EMBEDDING_API_KEY")
+
 client = ZhipuAiClient(
-    api_key="888e383d740044d2a33283cdb81111c3.0mVXD6B9lTDI3ZZ5"
+    api_key=zhipu_embedding_api_key
 )
 EMBEDDING_MODEL = "embedding-3"
 print("✓ 客户端初始化完成\n")
@@ -145,7 +149,7 @@ plt.grid(True, alpha=0.3)
 plt.tight_layout()
 
 # 保存图片
-output_path = 'study_agent/kmeans/cluster_result.png'
+output_path = 'kmeans/cluster_result.png'
 plt.savefig(output_path, dpi=150, bbox_inches='tight')
 print(f"✓ 可视化已保存到: {output_path}")
 
