@@ -9,7 +9,7 @@ from common.llm_config import get_default_llm, get_deepseek_llm, get_zhipu_llm
 
 trace_handler = LLMTraceHandler()
 
-llm = get_default_llm()
+llm = get_zhipu_llm()
 
 checkpointer = InMemorySaver()
 
