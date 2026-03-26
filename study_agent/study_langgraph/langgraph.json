@@ -1,0 +1,6 @@
+{
+  "graphs": {
+    "chatbot": "./08_ui.py:app"
+  },
+  "dependencies": [".", ".."]
+}
