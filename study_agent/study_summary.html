@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent 学习之旅 - 完整总结</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--card2:#334155;--text:#e2e8f0;--text2:#94a3b8;--accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;--red:#f87171;--orange:#fb923c;--pink:#f472b6;--border:#475569;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+h1{font-size:2.5em;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:30px 0 10px}
+.subtitle{text-align:center;color:var(--text2);margin-bottom:40px;font-size:1.1em}
+/* Nav */
+.nav{position:sticky;top:0;z-index:100;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 0;margin-bottom:30px}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 20px}
+.nav a{color:var(--text2);text-decoration:none;padding:6px 16px;border-radius:20px;font-size:0.9em;transition:all 0.3s}
+.nav a:hover,.nav a.active{background:var(--accent);color:var(--bg)}
+/* Section */
+.section{margin-bottom:50px}
+.section-title{font-size:1.8em;color:var(--accent);margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--accent2);display:flex;align-items:center;gap:12px}
+.section-title .icon{font-size:1.2em}
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);padding:24px;margin-bottom:20px;border:1px solid var(--border);transition:transform 0.2s}
+.card:hover{transform:translateY(-2px)}
+.card h3{color:var(--accent);margin-bottom:12px;font-size:1.3em}
+.card h4{color:var(--accent2);margin:16px 0 8px;font-size:1.1em}
+.card p,.card li{color:var(--text2);margin-bottom:6px}
+.card ul,.card ol{padding-left:20px}
+.card li{margin-bottom:4px}
+.card code{background:var(--card2);padding:2px 6px;border-radius:4px;font-size:0.9em;color:var(--green)}
+.card pre{background:#0d1117;padding:16px;border-radius:8px;overflow-x:auto;margin:12px 0;font-size:0.85em;line-height:1.5}
+.card pre code{background:none;padding:0;color:var(--text)}
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+/* Badge */
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.8em;font-weight:600;margin:2px}
+.badge-blue{background:rgba(56,189,248,0.15);color:var(--accent)}
+.badge-green{background:rgba(52,211,153,0.15);color:var(--green)}
+.badge-yellow{background:rgba(251,191,36,0.15);color:var(--yellow)}
+.badge-red{background:rgba(248,113,113,0.15);color:var(--red)}
+.badge-purple{background:rgba(129,140,248,0.15);color:var(--accent2)}
+.badge-orange{background:rgba(251,146,60,0.15);color:var(--orange)}
+/* Table */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.9em}
+th{background:var(--card2);color:var(--accent);padding:10px 12px;text-align:left;border-bottom:2px solid var(--border)}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:hover td{background:rgba(56,189,248,0.05)}
+/* Timeline */
+.timeline{position:relative;padding-left:30px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(var(--accent),var(--accent2))}
+.timeline-item{position:relative;margin-bottom:24px}
+.timeline-item::before{content:'';position:absolute;left:-26px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.timeline-item h4{color:var(--accent);margin-bottom:4px}
+.timeline-item p{color:var(--text2)}
+/* Flowchart */
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:16px 0}
+.flow-step{background:var(--card2);padding:10px 24px;border-radius:8px;text-align:center;font-size:0.95em;border:1px solid var(--border)}
+.flow-arrow{color:var(--accent);font-size:1.2em;line-height:1}
+/* Code file */
+.file-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.file-name{color:var(--green);font-family:monospace;font-size:0.95em}
+.file-desc{color:var(--text2);font-size:0.85em}
+/* Star rating */
+.stars{color:var(--yellow);letter-spacing:2px}
+/* Tag */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+/* Responsive */
+@media(max-width:768px){.grid{grid-template-columns:1fr}h1{font-size:1.8em}.nav a{font-size:0.8em;padding:4px 10px}}
+</style>
+</head>
+<body>
+<!-- Nav -->
+<nav class="nav"><div class="nav-inner">
+<a href="#plan">学习规划</a>
+<a href="#theory">理论基础</a>
+<a href="#framework">框架对比</a>
+<a href="#langchain">LangChain</a>
+<a href="#langgraph">LangGraph</a>
+<a href="#kmeans">KMeans</a>
+<a href="#common">Common</a>
+</div></nav>
+
+<div class="container">
+<h1>🤖 AI Agent 学习之旅</h1>
+<p class="subtitle">从后端工程师到 Agent 开发者 — 理论 + 实战完整记录</p>
+
+<!-- ====== Section 1: 学习规划 ====== -->
+<div class="section" id="plan">
+<div class="section-title"><span class="icon">📋</span> 一、学习规划（8-10周路线图）</div>
+
+<div class="card">
+<h3>技能地图（面向有经验后端开发者）</h3>
+<div class="grid">
+<div>
+<h4>1. LLM 与 Agent 基础</h4>
+<ul>
+<li>理解 LLM Agent 核心范式：<code>思考 → 调用工具 → 观察结果</code> 的 ReAct 循环</li>
+<li>掌握四种典型架构：
+  <ul>
+    <li><strong>ReAct</strong>：Thought / Action / Observation 显式循环</li>
+    <li><strong>Plan-then-Execute</strong>：Planner 制定计划 + Executor 执行</li>
+    <li><strong>多 Agent</strong>：Orchestrator–Worker 分工协作</li>
+    <li><strong>图/状态机编排</strong>：有向图 + 条件分支，高可控性</li>
+  </ul>
+</li>
+<li>核心理念：将 Agent 系统视为「带状态机和消息流的微服务系统」</li>
+</ul>
+</div>
+<div>
+<h4>2. 主流框架与生态</h4>
+<ul>
+<li><strong>LangChain</strong>：老牌 LLM 应用框架，生态最大</li>
+<li><strong>LangGraph</strong>：图式编排，适合复杂有状态工作流</li>
+<li><strong>AutoGen（微软）</strong>：多 Agent 会话 + 异步消息传递</li>
+<li><strong>CrewAI</strong>：角色化团队协作，易上手</li>
+<li><strong>Google ADK</strong>：云原生，2025年新推出</li>
+</ul>
+<p>建议选 <code>Python + LangChain/LangGraph</code> 为主线</p>
+</div>
+<div>
+<h4>3. 工具调用、RAG 与记忆</h4>
+<ul>
+<li><strong>工具调用</strong>：HTTP API、数据库查询、代码执行作为 Tools</li>
+<li><strong>RAG</strong>：文档分块 → 向量嵌入 → 向量库检索 → 喂给 LLM</li>
+<li><strong>记忆</strong>：短期（对话历史）+ 长期（知识库、用户偏好）</li>
+</ul>
+</div>
+<div>
+<h4>4. Agent 工程 vs 传统后端</h4>
+<ul>
+<li><strong>可靠性</strong>：失败重试、幂等、状态可追踪</li>
+<li><strong>成本控制</strong>：Token 用量、大小模型搭配</li>
+<li><strong>监控评估</strong>：Thought/Action 轨迹、链路分析</li>
+<li>将微服务的认证/限流/Tracing 直接搬到 Agent 服务</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>按周拆分的学习计划</h3>
+<div class="timeline">
+<div class="timeline-item">
+<h4>第 0 周：环境 & 选型（0.5-1周）</h4>
+<p>选 Python 为主栈，准备 LLM 供应商账号（OpenAI / Anthropic / Azure），搭建基础 HTTP API 服务验证链路</p>
+</div>
+<div class="timeline-item">
+<h4>第 1-2 周：LLM & Agent 基础打牢</h4>
+<p>阅读系统介绍文章，理解 ReAct 范式。练习 Prompt：让模型显式输出 Thought / Action / Observation / Final Answer。<br>
+产出：一个纯 Prompt 实现的 ReAct 命令行助手</p>
+</div>
+<div class="timeline-item">
+<h4>第 3-4 周：单 Agent + 工具调用实战</h4>
+<p>用 LangChain Agents 实现「一个 Agent + 多工具」（Web搜索、代码执行、数据库查询）。<br>
+产出：基于 LangChain 的 HTTP 服务，提供 <code>/research</code> 接口</p>
+</div>
+<div class="timeline-item">
+<h4>第 5-6 周：RAG 知识库与记忆</h4>
+<p>学习 RAG 模式（文档向量化 + 语义检索），选向量库（Chroma/pgvector/Pinecone），区分短期/长期记忆。<br>
+产出：一套「知识问答 Agent 服务」，带检索、答案引用原文链接</p>
+</div>
+<div class="timeline-item">
+<h4>第 7-8 周：多 Agent、编排与复杂工作流</h4>
+<p>用 AutoGen/CrewAI 实现 Orchestrator–Worker 模式，引入 LangGraph 图式编排实现出错重试和人工介入。<br>
+产出：多 Agent 服务带 Web UI，展示任务分工</p>
+</div>
+<div class="timeline-item">
+<h4>第 9-10 周：生产化、评估与团队化</h4>
+<p>可观测性（记录 Prompt/工具调用/轨迹）、评估（A/B 测试）、成本与安全（大小模型搭配、权限隔离）。<br>
+产出：内部技术文档，说明架构、失败模式、监控指标</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>利用已有后端经验的优势</h3>
+<div class="grid">
+<div>
+<h4>数据结构与架构优先</h4>
+<p>优先理解 ReAct、多Agent、图式编排，类比为「工作流引擎 + 消息总线 + 状态机」，比啃深度学习更高效</p>
+</div>
+<div>
+<h4>工程实践迁移</h4>
+<p>将认证、限流、日志、Tracing、重试、熔断等模式直接搬到 Agent 服务中</p>
+</div>
+<div>
+<h4>项目驱动</h4>
+<p>从业务中挑「高信息密度、规则模糊、人力重复」的场景做首个 Agent 项目</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ====== Section 2: 理论基础 ====== -->
+<div class="section" id="theory">
+<div class="section-title"><span class="icon">🧠</span> 二、理论基础</div>
+
+<!-- ReAct -->
+<div class="card">
+<h3>2.1 ReAct (Reason + Act) 范式</h3>
+<p style="margin-bottom:12px">ReAct 强制模型交替进行<strong>逻辑推理</strong>与<strong>工具调用</strong>来与外部世界交互，逐步向解决问题迈进。</p>
+
+<h4>Agent 组件</h4>
+<table>
+<tr><th>组件</th><th>说明</th></tr>
+<tr><td><strong>LLM（大脑）</strong></td><td>生成决策步骤，释放思想和行动指令</td></tr>
+<tr><td><strong>Tools（工具）</strong></td><td>外部函数或 API（搜索、计算、数据库操作等），以名称+自然语言描述注册</td></tr>
+<tr><td><strong>Agent Executor</strong></td><td>执行模型的行动决定，调用工具并返回结果</td></tr>
+<tr><td><strong>State（状态）</strong></td><td>累积的对话和行动历史，随步骤不断更新</td></tr>
+</table>
+
+<h4>工作循环</h4>
+<div class="flow">
+<div class="flow-step">1. 接收请求 (Query)</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">2. 生成推理和行动 (Think)<br><small>Thought: 内部推理 → Action: 调用工具</small></div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">3. 执行操作 → 调用工具获取结果</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">4. 状态更新 (Observation) → 添加到历史</div>
+<div class="flow-arrow">↓ 循环</div>
+<div class="flow-step">5. 完成END → 返回 Final Answer</div>
+</div>
+
+<h4>内部反思（Thoughts）</h4>
+<ul>
+<li><strong>分析和规划</strong>：「先收集数据，再识别模式，最后准备报告」</li>
+<li><strong>自我反思</strong>：「之前的方法无效，我将尝试不同策略」</li>
+<li><strong>记忆整合</strong>：「用户之前说偏好 Python，用这种语言提供示例」</li>
+<li><strong>优先级排序</strong>：「添加新功能前，先消除安全漏洞」</li>
+</ul>
+
+<h4>LangGraph 中的实现细节</h4>
+<ul>
+<li>使用 <code>tool-calling (function-calling)</code> 替代原始文本 prompt 解析</li>
+<li>使用参数数组调用工具（而非单个大字符串）</li>
+<li>允许一次调用多个工具</li>
+<li>默认不显式生成 Thought 阶段（LLM 能力已提升，不再必要）</li>
+</ul>
+
+<h4>优缺点</h4>
+<div class="grid">
+<div>
+<h4 style="color:var(--green)">✅ 优点</h4>
+<ul>
+<li>灵活的逐步解决方案，可动态解决复杂问题</li>
+<li>易于开发，许多框架提供现成实现</li>
+<li>通用性强，适用于各种领域</li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--red)">❌ 缺点</h4>
+<ul>
+<li>每步都需要 LLM 调用，长链缓慢且昂贵</li>
+<li>没有全局计划，可能进入死胡同</li>
+<li>工具/历史过多时，可扩展性有限</li>
+</ul>
+</div>
+</div>
+
+<h4>其他 Agent 构建方法</h4>
+<div class="tag-row">
+<span class="badge badge-blue">Chain-Of-Thought (CoT)</span>
+<span class="badge badge-purple">Tree-Of-Thought (ToT)</span>
+<span class="badge badge-green">Plan-and-Execute</span>
+<span class="badge badge-yellow">ReWOO</span>
+<span class="badge badge-orange">LLMCompiler</span>
+<span class="badge badge-red">Reflexion</span>
+<span class="badge badge-blue">Self-Discover</span>
+<span class="badge badge-purple">MRKL Systems</span>
+<span class="badge badge-green">PAL</span>
+<span class="badge badge-yellow">Toolformer</span>
+</div>
+<p style="margin-top:8px">多 Agent 系统：Network / Supervisor / Hierarchical</p>
+</div>
+
+<!-- 第一性原理 -->
+<div class="card">
+<h3>2.2 AI 智能体从第一性原理理解</h3>
+
+<h4>定义</h4>
+<p>AI 智能体不是普通 LLM，而是能独立<strong>感知、推理、决策、调用工具、执行行动</strong>的闭环系统。</p>
+<table>
+<tr><th>特性</th><th>标准 LLM</th><th>Agent</th></tr>
+<tr><td>功能</td><td>文本到文本映射</td><td>拥有行为循环：感知→推理→决策→行动→反馈→再推理</td></tr>
+<tr><td>工具能力</td><td>无/有限</td><td>可主动调用</td></tr>
+<tr><td>自主行动</td><td>否</td><td>是</td></tr>
+<tr><td>循环反馈</td><td>否</td><td>是</td></tr>
+</table>
+
+<h4>能力分级</h4>
+<div class="flow">
+<div class="flow-step" style="border-color:var(--text2)">Level 0：标准 LLM<br><small>输入文本 → 输出文本，只能依赖内部知识</small></div>
+<div class="flow-arrow">↓ + 工具调用</div>
+<div class="flow-step" style="border-color:var(--accent)">Level 1：LLM + Tool Use<br><small>生成结构化 API 调用，结果反馈给 LLM</small></div>
+<div class="flow-arrow">↓ + 问题分解</div>
+<div class="flow-step" style="border-color:var(--accent2)">Level 2：问题分解<br><small>任务分解 + 迭代执行 + 反馈循环</small></div>
+<div class="flow-arrow">↓ + 自主决策</div>
+<div class="flow-step" style="border-color:var(--green)">Level 3：高自主性 Agent<br><small>长期运行、自主决策 next action、后台持续运行</small></div>
+</div>
+
+<h4>两大基本支柱</h4>
+<div class="grid">
+<div>
+<h4>工具使用</h4>
+<p>LLM 知识有时效性限制和幻觉风险，需要调用更可靠的外部工具（搜索 API、数据库、计算器等）来克服限制。</p>
+<p>流程：<code>停止生成 → 解析调用 → 执行工具 → 结果放入上下文 → 继续生成</code></p>
+</div>
+<div>
+<h4>推理能力</h4>
+<p>Agent 需要拆解问题、设计计划、决定调用哪些工具、理解结果并调整计划。</p>
+<p>专门的<strong>推理模型</strong>能生成更长、条件适应性强的思维链（reasoning trajectory）。</p>
+</div>
+</div>
+
+<h4>ReAct：底层行为循环</h4>
+<div class="flow" style="flex-direction:row;flex-wrap:wrap;justify-content:center">
+<div class="flow-step">Observation</div><div class="flow-arrow">→</div>
+<div class="flow-step">Thought</div><div class="flow-arrow">→</div>
+<div class="flow-step">Action</div><div class="flow-arrow">→</div>
+<div class="flow-step">Observation</div><div class="flow-arrow">→</div>
+<div class="flow-step">Thought → ...</div>
+</div>
+</div>
+
+<!-- LLM Agents 终极指南 -->
+<div class="card">
+<h3>2.3 LLM Agents 终极指南（SuperAnnotate）</h3>
+
+<h4>四大核心组件</h4>
+<div class="grid">
+<div>
+<h4>1. Agent/Brain（大脑）</h4>
+<ul>
+<li>核心：语言模型（LLM/LAM）</li>
+<li>输入：Prompt + Persona（角色设定）</li>
+</ul>
+</div>
+<div>
+<h4>2. Memory（记忆）</h4>
+<table>
+<tr><th>类型</th><th>类比</th><th>特点</th></tr>
+<tr><td>短期记忆</td><td>记事本</td><td>临时存储对话上下文</td></tr>
+<tr><td>长期记忆</td><td>日记</td><td>存储长期见解和学习模式</td></tr>
+</table>
+</div>
+<div>
+<h4>3. Planning（规划）</h4>
+<p><strong>两阶段</strong>：计划制定（CoT/ToT/分层）→ 计划反思（ReAct/Reflexion）</p>
+<ul>
+<li><strong>CoT</strong>：逐个子任务解决</li>
+<li><strong>ToT</strong>：探索多条路径，树状分支</li>
+<li><strong>Reflexion</strong>：基于反馈自我完善</li>
+</ul>
+</div>
+<div>
+<h4>4. Tools（工具）</h4>
+<ul>
+<li><strong>MRKL</strong>：模块化专家系统，LLM 作为路由器</li>
+<li><strong>Toolformer/TALM</strong>：微调模型与 API 交互</li>
+<li><strong>HuggingGPT</strong>：选择最佳模型处理任务</li>
+<li><strong>API-Bank</strong>：53 个常用 API 基准测试</li>
+</ul>
+</div>
+</div>
+
+<h4>四大能力</h4>
+<div class="grid">
+<div class="flow-step" style="border-color:var(--accent)">高级问题解决<br><small>生成计划 → 编写代码 → 运行测试 → 创建摘要</small></div>
+<div class="flow-step" style="border-color:var(--accent2)">自我反思和改进<br><small>输出 → 分析 → 批评 → 重写 → 改进</small></div>
+<div class="flow-step" style="border-color:var(--green)">工具使用验证<br><small>运行单元测试验证代码</small></div>
+<div class="flow-step" style="border-color:var(--yellow)">多 Agent 协作<br><small>Agent A(生成) + Agent B(批评)</small></div>
+</div>
+
+<h4>七大挑战</h4>
+<div class="grid">
+<div><span class="badge badge-red">1</span> 有限上下文</div>
+<div><span class="badge badge-orange">2</span> 长期规划困难</div>
+<div><span class="badge badge-yellow">3</span> 输出不一致</div>
+<div><span class="badge badge-purple">4</span> 角色适应挑战</div>
+<div><span class="badge badge-blue">5</span> 提示依赖</div>
+<div><span class="badge badge-green">6</span> 知识管理困难</div>
+<div><span class="badge badge-red">7</span> 成本效率问题</div>
+</div>
+
+<h4>决策指南：何时使用 LLM Agent？</h4>
+<div class="flow">
+<div class="flow-step">简单事实查询？</div>
+<div class="flow-arrow">YES → 用 RAG / NO ↓</div>
+<div class="flow-step">需要多步推理？</div>
+<div class="flow-arrow">YES ↓ / NO → 其他方案</div>
+<div class="flow-step">需要规划？</div>
+<div class="flow-arrow">YES → 使用 LLM Agent ✓</div>
+</div>
+</div>
+</div>
+
+<!-- ====== Section 3: 框架对比 ====== -->
+<div class="section" id="framework">
+<div class="section-title"><span class="icon">⚔️</span> 三、架构设计与框架对比</div>
+
+<div class="card">
+<h3>3.1 四种核心 Agent 架构</h3>
+<p style="margin-bottom:16px">基于视频《Designing AI Agents》的核心知识总结。六项评估指标：<strong>推理能力、成本、可靠性、延迟、可扩展性、可解释性</strong>。</p>
+
+<div class="grid">
+<div>
+<h4 style="color:var(--accent)">🎭 策略一：即兴者 (ReAct)</h4>
+<p><strong>原理</strong>：Thought → Action → Observation 持续循环</p>
+<p><strong>成本</strong>：线性增长（每步都调用 LLM），100万任务/天 ≈ $40万/天</p>
+<p><strong>最适合</strong>：客户支持、实时交互、探索性研究</p>
+<div class="tag-row"><span class="badge badge-green">灵活性最高</span><span class="badge badge-red">成本高</span></div>
+</div>
+<div>
+<h4 style="color:var(--accent2)">📐 策略二：蓝图 (Plan-Execute)</h4>
+<p><strong>原理</strong>：规划者（昂贵模型 GPT-4）→ 执行者（便宜模型 Haiku）</p>
+<p><strong>优势</strong>：昂贵模型只调用一次，成本效率高</p>
+<p><strong>最适合</strong>：结构良好的问题、成本敏感应用</p>
+<div class="tag-row"><span class="badge badge-green">成本最低</span><span class="badge badge-red">系统脆弱</span></div>
+</div>
+<div>
+<h4 style="color:var(--yellow)">👥 策略三：专家团队 (Hierarchical)</h4>
+<p><strong>原理</strong>：Manager Agent + 多个 Specialist Agent</p>
+<p><strong>优势</strong>：专业化 + 并行处理 + 可扩展</p>
+<p><strong>最适合</strong>：企业级复杂系统、并行化场景</p>
+<div class="tag-row"><span class="badge badge-green">可扩展性最强</span><span class="badge badge-red">协调开销大</span></div>
+</div>
+<div>
+<h4 style="color:var(--green)">🔄 策略四：迷宫 (Graph)</h4>
+<p><strong>原理</strong>：有限状态机 — State + Node + Edge</p>
+<p><strong>优势</strong>：可靠性最高、可恢复、支持人工介入</p>
+<p><strong>最适合</strong>：长期运行流程、金融交易、需审批的工作流</p>
+<div class="tag-row"><span class="badge badge-green">可靠性最高</span><span class="badge badge-red">灵活性差</span></div>
+</div>
+</div>
+
+<h4>架构对比矩阵</h4>
+<table>
+<tr><th>架构</th><th>成本效率</th><th>适应性</th><th>可靠性</th><th>可扩展性</th><th>复杂度</th></tr>
+<tr><td><strong>ReAct</strong></td><td>⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐</td><td>⭐</td></tr>
+<tr><td><strong>计划执行</strong></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐</td></tr>
+<tr><td><strong>分层</strong></td><td>⭐⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>图编排</strong></td><td>⭐⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+</table>
+
+<h4>架构选择决策图</h4>
+<div class="flow">
+<div class="flow-step">环境动态且不可预测？→ YES → 需要实时适应？→ YES → <strong>【ReAct】</strong></div>
+<div class="flow-arrow">↓ NO</div>
+<div class="flow-step">问题结构良好可分解？→ YES → 成本最小化？→ YES → <strong>【计划然后执行】</strong></div>
+<div class="flow-arrow">↓ NO</div>
+<div class="flow-step">需要处理极端复杂性？→ YES → <strong>【分层Agents】</strong></div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">长期运行 + 人工介入？→ YES → <strong>【图编排】</strong></div>
+</div>
+
+<h4>四大战略权衡</h4>
+<div class="grid">
+<div class="flow-step">确定性 ←→ 灵活性</div>
+<div class="flow-step">延迟 ←→ 推理深度</div>
+<div class="flow-step">成本 ←→ 质量</div>
+<div class="flow-step">控制 ←→ 自主性</div>
+</div>
+
+<h4>真实世界场景匹配</h4>
+<table>
+<tr><th>场景</th><th>架构</th><th>框架推荐</th></tr>
+<tr><td>客户支持聊天</td><td>ReAct</td><td>OpenAI SDK / CrewAI</td></tr>
+<tr><td>数据分析管道</td><td>计划执行 + 图</td><td>LangGraph / Semantic Kernel</td></tr>
+<tr><td>研究团队模拟</td><td>分层</td><td>AutoGen / CrewAI</td></tr>
+<tr><td>保险索赔工作流</td><td>图编排</td><td>n8n</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>3.2 2025年 Agentic AI 框架对比（五大框架）</h3>
+
+<div class="grid">
+<div>
+<h4>LangChain Agents</h4>
+<p>最大社区（11.6万⭐），ReAct 风格 agents，与 LangChain 工具无缝集成。高级别抽象但精细控制能力较弱。</p>
+</div>
+<div>
+<h4>LangGraph</h4>
+<p>基于图的 API（1.92万⭐），每个计算是节点，边控制流程。集成了 LangSmith 用于调试、持久执行、人在回路。适合复杂有状态应用。</p>
+</div>
+<div>
+<h4>AutoGen（微软）</h4>
+<p>多智能体对话框架（5万+⭐），以代码为中心的 API，异步事件驱动系统。强大的「智能体委托」模型。v0.7 增加了流式支持。</p>
+</div>
+<div>
+<h4>CrewAI</h4>
+<p>强调简洁性（3.8万+⭐），引入 Crews（智能体团队）和 Flows（逐步工作流）。清晰的对象模型。10万认证用户，每周更新。</p>
+</div>
+<div>
+<h4>Google ADK</h4>
+<p>2025年4月推出（1.3万⭐），代码优先、模型无关。原生支持 A2A 通信协议。与 Vertex AI 深度集成。云原生设计。</p>
+</div>
+</div>
+
+<h4>GitHub 数据</h4>
+<table>
+<tr><th>框架</th><th>GitHub Stars</th><th>未解决问题</th><th>特点</th></tr>
+<tr><td>LangChain</td><td>11.6万</td><td>-</td><td>生态最大</td></tr>
+<tr><td>AutoGen</td><td>5万+</td><td>400+</td><td>多智能体对话</td></tr>
+<tr><td>CrewAI</td><td>3.8万+</td><td>42</td><td>角色化团队</td></tr>
+<tr><td>LangGraph</td><td>1.92万</td><td>129</td><td>图式编排</td></tr>
+<tr><td>Google ADK</td><td>1.3万</td><td>590+</td><td>云原生</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>3.3 框架选择完整指南（10因素决策矩阵）</h3>
+<p style="margin-bottom:12px">涵盖：Langflow、n8n、OpenAI AgentKit、LangChain+LangGraph、CrewAI、AutoGPT</p>
+
+<div class="grid">
+<div>
+<h4>Langflow</h4>
+<span class="badge badge-blue">可视化优先</span>
+<ul>
+<li>基于节点的可视化编辑器</li>
+<li>完整 MCP 支持（客户端+服务器）</li>
+<li>自托管，最高隐私</li>
+</ul>
+<p><strong>最适合</strong>：快速原型设计 + 自定义 Python 节点</p>
+</div>
+<div>
+<h4>n8n</h4>
+<span class="badge badge-green">自动化引擎</span>
+<ul>
+<li>成熟的编排器，数百个连接器</li>
+<li>运行历史、错误处理、计划</li>
+<li>云 + 自托管</li>
+</ul>
+<p><strong>最适合</strong>：集成密集型用例、非技术用户</p>
+</div>
+<div>
+<h4>OpenAI AgentKit</h4>
+<span class="badge badge-yellow">端到端</span>
+<ul>
+<li>Responses API + 内置工具 + 防护 + 评估</li>
+<li>可视化 Agent Builder（测试版）</li>
+<li>基于使用量的定价</li>
+</ul>
+<p><strong>最适合</strong>：OpenAI 生态系统的快速投产</p>
+</div>
+<div>
+<h4>LangChain + LangGraph</h4>
+<span class="badge badge-purple">最灵活</span>
+<ul>
+<li>庞大的集成和模式生态系统</li>
+<li>显式状态机和错误处理</li>
+<li>与 LangSmith 配对调试</li>
+</ul>
+<p><strong>最适合</strong>：自定义复杂工作流的工程团队</p>
+</div>
+<div>
+<h4>CrewAI</h4>
+<span class="badge badge-orange">角色化团队</span>
+<ul>
+<li>清晰的角色/任务抽象</li>
+<li>自主交接、共享上下文</li>
+<li>企业功能 + UI</li>
+</ul>
+<p><strong>最适合</strong>：多智能体「团队」协作</p>
+</div>
+<div>
+<h4>AutoGPT/AG2</h4>
+<span class="badge badge-red">自主模式</span>
+<ul>
+<li>自主循环、自我分解</li>
+<li>开放性问题解决</li>
+<li>容易自反馈循环和错误级联</li>
+</ul>
+<p><strong>最适合</strong>：研究、内部工具、受控环境</p>
+</div>
+</div>
+
+<h4>10 因素决策矩阵</h4>
+<table>
+<tr><th>#</th><th>因素</th><th>关键考量</th></tr>
+<tr><td>1</td><td>开发者体验</td><td>可视化优先（Langflow/n8n）vs 代码优先（LangGraph/CrewAI）</td></tr>
+<tr><td>2</td><td>编排模型</td><td>图 vs 对话 vs 基于角色</td></tr>
+<tr><td>3</td><td>多智能体能力</td><td>CrewAI/AutoGen 专精；LangGraph 显式状态机</td></tr>
+<tr><td>4</td><td>工具和连接器</td><td>n8n 数百个；LangChain 生态最广</td></tr>
+<tr><td>5</td><td>内存和状态管理</td><td>LangGraph 显式状态；CrewAI 共享团队上下文</td></tr>
+<tr><td>6</td><td>评估/防护/安全</td><td>AgentKit 内置；其他依赖第三方</td></tr>
+<tr><td>7</td><td>可观测性</td><td>n8n 一流运行日志；LangSmith/Langfuse 集成</td></tr>
+<tr><td>8</td><td>部署模型</td><td>自托管（Langflow/LangChain）vs 云（AgentKit）</td></tr>
+<tr><td>9</td><td>成本模型</td><td>AgentKit 按使用量；OSS 自托管只需基础设施费</td></tr>
+<tr><td>10</td><td>社区成熟度</td><td>LangChain 最大；n8n 最成熟</td></tr>
+</table>
+
+<h4>选择三步法</h4>
+<div class="flow">
+<div class="flow-step"><strong>Step 1</strong>：确定不可妥协项（合规性？部署？审计？数据边界？）</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step"><strong>Step 2</strong>：决定模型供应商策略（OpenAI 锁定 vs 供应商灵活）</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step"><strong>Step 3</strong>：计划可观测性（追踪、Token 成本、错误捕获、日志）</div>
+</div>
+</div>
+</div>
+
+<!-- ====== Section 4: LangChain 实战 ====== -->
+<div class="section" id="langchain">
+<div class="section-title"><span class="icon">🔗</span> 四、LangChain 实战 Demo</div>
+
+<div class="card">
+<h3>4.1 Quick Start — 天气预报 Agent</h3>
+<div class="file-header"><span class="file-name">01_quick_start.py</span><span class="badge badge-blue">完整版</span></div>
+<p>演示 LangChain <code>create_agent</code> 构建完整 Agent，包含工具调用、结构化输出、上下文传递。</p>
+
+<h4>核心特性</h4>
+<ul>
+<li><strong>自定义 Context</strong>：通过 <code>context_schema=Context</code> 传递用户上下文（如用户名）</li>
+<li><strong>结构化输出</strong>：<code>response_format=ToolStrategy(ResponseFormat)</code> 定义双关语+天气格式</li>
+<li><strong>工具链</strong>：<code>get_user_city</code> → <code>get_weather_for_city</code> → <code>ResponseFormat</code></li>
+<li><strong>System Prompt</strong>：定义角色（天气预报专家）、工具调用流程、示例对话</li>
+</ul>
+
+<h4>工具定义</h4>
+<pre><code>@tool
+def get_user_city(runtime: ToolRuntime[Context]):
+    """获取用户所在城市"""
+    user_name = runtime.context.user_name
+    city = "北京市" if user_name == "周杰" else "四川市"
+    return {"city": city}
+
+@tool
+def get_weather_for_city(city: str) -> str:
+    """获取城市的天气"""
+    return f"{city} 总是阳光明媚!"</code></pre>
+
+<h4>Agent 构建</h4>
+<pre><code>agent = create_agent(
+    llm,                          # 智谱 GLM 模型
+    system_prompt=SYSTEM_PROMPT,  # 角色 + 工具流程说明
+    tools=[get_user_city, get_weather_for_city],
+    context_schema=Context,       # 上下文结构
+    response_format=ToolStrategy(ResponseFormat),  # 结构化输出
+    checkpointer=checkpointer    # InMemorySaver 持久化
+)</code></pre>
+
+<h4>对比版本：无结构化输出</h4>
+<div class="file-header"><span class="file-name">01_quick_start_error.py</span><span class="badge badge-red">精简版</span></div>
+<p>与完整版相比，移除了 <code>response_format</code> 参数，展示不带结构化输出的 Agent 行为差异。</p>
+</div>
+
+<div class="card">
+<h3>4.2 Streaming — 流式输出可视化</h3>
+<div class="file-header"><span class="file-name">02_streaming.py</span><span class="badge badge-green">流式</span></div>
+<p>演示 LangChain Agent 的流式输出与可视化。</p>
+
+<h4>三种 Stream Mode</h4>
+<table>
+<tr><th>模式</th><th>说明</th><th>输出内容</th></tr>
+<tr><td><code>updates</code></td><td>状态更新流</td><td>每个节点的状态变化</td></tr>
+<tr><td><code>messages</code></td><td>消息 Token 流</td><td>LLM 逐 Token 输出</td></tr>
+<tr><td><code>custom</code></td><td>自定义数据流</td><td>通过 <code>get_stream_writer()</code> 发送的自定义数据</td></tr>
+</table>
+
+<h4>关键代码</h4>
+<pre><code>@tool
+def get_weather_for_city(city: str) -> str:
+    writer = get_stream_writer()
+    writer("查询中...")          # 自定义流式消息
+    writer(f"查询结果: {city} 总是阳光明媚!")
+    return f"{city} 总是阳光明媚!"
+
+visualize_stream(agent,
+    input_data={"messages": [{"role": "user", "content": "北京天气怎么样?"}]},
+    stream_mode="messages"  # 可切换为 "updates" / "custom"
+)</code></pre>
+</div>
+
+<div class="card">
+<h3>4.3 Middleware — 人工介入审批</h3>
+<div class="file-header"><span class="file-name">03_middleware.py</span><span class="badge badge-purple">Human-in-the-Loop</span></div>
+<p>使用 <code>HumanInTheLoopMiddleware</code> 在工具执行前暂停，等待人工审批。</p>
+
+<h4>中间件配置</h4>
+<pre><code>middleware=[
+    HumanInTheLoopMiddleware(
+        interrupt_on={
+            "get_weather_for_city": {
+                "allowed_decisions": ["approve", "edit", "reject"],
+            },
+            "get_user_city": False  # 不中断
+        }
+    )
+]</code></pre>
+
+<h4>三种审批操作</h4>
+<div class="grid">
+<div>
+<h4 style="color:var(--green)">approve（批准）</h4>
+<pre><code>Command(resume={"decisions": [{"type": "approve"}]})</code></pre>
+</div>
+<div>
+<h4 style="color:var(--yellow)">edit（编辑）</h4>
+<pre><code>Command(resume={"decisions": [{
+    "type": "edit",
+    "edited_action": {"name": tool_name, "args": new_args}
+}]})</code></pre>
+</div>
+<div>
+<h4 style="color:var(--red)">reject（拒绝）</h4>
+<pre><code>Command(resume={"decisions": [{"type": "reject"}]})</code></pre>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>4.4 MCP Client/Server — 工具协议</h3>
+<p>演示 Model Context Protocol（MCP）的客户端/服务器架构。</p>
+
+<div class="grid">
+<div>
+<div class="file-header"><span class="file-name">04_mcp_server_stdio_math.py</span><span class="badge badge-blue">stdio</span></div>
+<p>本地子进程通信的数学工具服务器。</p>
+<pre><code>mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -> int:
+    """Add two numbers"""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers"""
+    return a * b
+
+mcp.run(transport="stdio")</code></pre>
+</div>
+<div>
+<div class="file-header"><span class="file-name">04_mcp_server_http_weather.py</span><span class="badge badge-green">http</span></div>
+<p>HTTP 远程通信的天气工具服务器。</p>
+<pre><code>mcp = FastMCP("Weather")
+
+@mcp.tool()
+async def get_weather(location: str) -> str:
+    """Get weather for location."""
+    return "It's always sunny in New York"
+
+mcp.run(transport="streamable-http")</code></pre>
+</div>
+</div>
+
+<h4>客户端（统一调用）</h4>
+<div class="file-header"><span class="file-name">04_mcp_client.py</span><span class="badge badge-purple">MultiServer</span></div>
+<pre><code>client = MultiServerMCPClient({
+    "math": {
+        "transport": "stdio",
+        "command": "python",
+        "args": ["04_mcp_server_stdio_math.py"],
+    },
+    "weather": {
+        "transport": "http",
+        "url": "http://localhost:8000/mcp",
+    }
+})
+tools = await client.get_tools()
+agent = create_agent(model=get_default_llm(), tools=tools)</code></pre>
+</div>
+
+<div class="card">
+<h3>4.5 RAG 知识库 — 向量化 + 检索</h3>
+
+<div class="grid">
+<div>
+<div class="file-header"><span class="file-name">05_knowledge_base_save.py</span><span class="badge badge-yellow">入库</span></div>
+<p>PDF 文档 → 拆分 → 向量化 → 存入 Chroma 向量库</p>
+<pre><code># 1. 读取 PDF
+docs = PyPDFLoader("深入理解计算机系统.pdf").load()
+
+# 2. 拆分文档
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000, chunk_overlap=200
+)
+all_splits = text_splitter.split_documents(docs)
+
+# 3. 向量化 + 存储
+embeddings = HuggingFaceEmbeddings(
+    model_name="all-mpnet-base-v2"
+)
+vector_store = Chroma(
+    collection_name="example_collection",
+    embedding_function=embeddings,
+    persist_directory="./chroma_langchain_db"
+)
+vector_store.add_documents(documents=all_splits)</code></pre>
+</div>
+<div>
+<div class="file-header"><span class="file-name">05_knowledge_base_search.py</span><span class="badge badge-green">检索</span></div>
+<p>从 Chroma 向量库进行语义相似度搜索</p>
+<pre><code>results = vector_store.similarity_search_with_score(
+    "计算流水线是什么？"
+)
+for doc, score in results:
+    print(f"分数({score}): {doc}")</code></pre>
+<h4>技术栈</h4>
+<ul>
+<li><strong>Embedding</strong>：HuggingFace <code>all-mpnet-base-v2</code></li>
+<li><strong>向量库</strong>：Chroma（本地持久化）</li>
+<li><strong>文档加载</strong>：PyPDFLoader</li>
+<li><strong>文档拆分</strong>：RecursiveCharacterTextSplitter</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ====== Section 5: LangGraph 实战 ====== -->
+<div class="section" id="langgraph">
+<div class="section-title"><span class="icon">📊</span> 五、LangGraph 实战 Demo（9个渐进式示例）</div>
+
+<div class="card">
+<h3>5.1 Quick Start — 算术 Agent</h3>
+<div class="file-header"><span class="file-name">01_quick_start.py</span><span class="badge badge-blue">核心入门</span></div>
+<p>最基础的 LangGraph Agent，演示 State + Node + Edge + Tool 的核心循环。</p>
+
+<h4>架构</h4>
+<div class="flow">
+<div class="flow-step">START → LLM Node → 条件路由 → Tool Node → LLM Node → ... → END</div>
+</div>
+
+<h4>三个工具</h4>
+<pre><code>@tool def add(a: int, b: int) -> int:     """加法"""
+@tool def multiply(a: int, b: int) -> int: """乘法"""
+@tool def divide(a: float, b: float) -> float: """除法"""</code></pre>
+
+<h4>核心代码</h4>
+<pre><code>graph = (
+    StateGraph(MessagesState)
+    .add_node("llm", llm_node)        # LLM 调用节点
+    .add_node("tools", tool_node)      # 工具执行节点
+    .add_edge(START, "llm")
+    .add_conditional_edges("llm", route)  # 条件路由：有工具调用→tools，否则→END
+    .add_edge("tools", "llm")          # 工具执行后回到 LLM
+    .compile()
+)</code></pre>
+</div>
+
+<div class="card">
+<h3>5.2 Streaming — 六种流式模式</h3>
+<div class="file-header"><span class="file-name">02_streaming.py</span><span class="badge badge-green">流式</span></div>
+
+<table>
+<tr><th>Stream Mode</th><th>说明</th><th>使用场景</th></tr>
+<tr><td><code>values</code></td><td>完整状态流</td><td>查看每步后的完整状态</td></tr>
+<tr><td><code>updates</code></td><td>状态变化流</td><td>只看增量变化</td></tr>
+<tr><td><code>messages</code></td><td>LLM Token 流</td><td>逐 Token 前端显示</td></tr>
+<tr><td><code>custom</code></td><td>自定义数据流</td><td>进度条、中间状态</td></tr>
+<tr><td><code>checkpoints</code></td><td>Checkpoint 事件</td><td>调试持久化</td></tr>
+<tr><td><code>tasks</code></td><td>Task 事件</td><td>追踪任务执行</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>5.3 Interrupt — 人工介入 (Human-in-the-Loop)</h3>
+<div class="file-header"><span class="file-name">03_interrupt.py</span><span class="badge badge-purple">核心机制</span></div>
+<p>使用 <code>interrupt()</code> 暂停工作流，等待人工审批后用 <code>Command(resume=...)</code> 恢复。</p>
+
+<h4>工作流</h4>
+<div class="flow">
+<div class="flow-step">提交动作 → 审批节点(interrupt) → 批准→执行 / 拒绝→取消</div>
+</div>
+
+<pre><code># 审批节点：暂停等待人工
+def approval_node(state):
+    decision = interrupt({"question": f"是否批准: {state.action}?"})
+    if decision:
+        return Command(goto="execute")
+    else:
+        return Command(goto="cancel")
+
+# 恢复执行
+graph.invoke(Command(resume=True), config, version="v2")</code></pre>
+</div>
+
+<div class="card">
+<h3>5.4 Time Travel — 时间旅行 / Checkpoint</h3>
+<div class="file-header"><span class="file-name">04_time_travel.py</span><span class="badge badge-yellow">状态回溯</span></div>
+<p>利用 Checkpoint 机制，可以回溯到任意历史状态并从该点重新执行。</p>
+
+<h4>核心能力</h4>
+<ul>
+<li>列出所有 Checkpoint：<code>graph.get_state_history(config)</code></li>
+<li>指定 Checkpoint 恢复：<code>config["configurable"]["checkpoint_id"] = cp_id</code></li>
+<li>历史记录累积：每次恢复后继续执行会追加新历史</li>
+</ul>
+
+<pre><code># 列出所有历史 Checkpoint
+for state in graph.get_state_history(config):
+    print(f"Checkpoint: {state.config}, Step: {state.values['step']}")
+
+# 回溯到特定 Checkpoint
+graph.invoke(None, {"configurable": {"thread_id": thread_id, "checkpoint_id": target_id}})</code></pre>
+</div>
+
+<div class="card">
+<h3>5.5 Memory — 短期 + 长期记忆</h3>
+<div class="file-header"><span class="file-name">05_memory.py</span><span class="badge badge-orange">记忆系统</span></div>
+
+<h4>三种记忆场景</h4>
+<div class="grid">
+<div>
+<h4>短期记忆（同一会话）</h4>
+<p>使用 <code>MemorySaver</code> checkpointer，同一 <code>thread_id</code> 内保持对话历史。</p>
+<pre><code>checkpointer = MemorySaver()
+# 同一 thread_id 的多轮对话
+# 自动累积 messages 历史</code></pre>
+</div>
+<div>
+<h4>不同会话（不同 thread_id）</h4>
+<p>切换 <code>thread_id</code> 后，记忆不共享，模拟独立会话。</p>
+</div>
+<div>
+<h4>长期记忆（跨会话）</h4>
+<p>使用 <code>InMemoryStore</code> store，通过 <code>user_id</code> 命名空间存储跨会话的用户偏好和知识。</p>
+<pre><code>store = InMemoryStore()
+# 通过 store.put() / store.search()
+# 实现跨会话长期记忆</code></pre>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>5.6 Subgraph — 子图模式</h3>
+<div class="file-header"><span class="file-name">06_subgraph.py</span><span class="badge badge-blue">组合模式</span></div>
+<p>两种子图嵌入方式。</p>
+
+<div class="grid">
+<div>
+<h4>方式一：共享 State</h4>
+<p>子图与父图使用相同的 State keys，直接嵌入。</p>
+<pre><code># 父图直接添加子图编译结果作为节点
+parent.add_node("child", child_graph)</code></pre>
+</div>
+<div>
+<h4>方式二：不同 State</h4>
+<p>子图有独立 State，在节点函数中手动转换状态。</p>
+<pre><code># 在节点中调用子图并转换状态
+def call_subgraph(state):
+    result = child_graph.invoke(convert(state))
+    return convert_back(result)</code></pre>
+</div>
+</div>
+
+<h4>流式追踪</h4>
+<pre><code># 使用 subgraphs=True 查看内部执行
+for chunk in graph.stream(input, config, subgraphs=True):
+    print(chunk)  # 包含命名空间信息</code></pre>
+</div>
+
+<div class="card">
+<h3>5.7 Testing — 测试模式</h3>
+<div class="file-header"><span class="file-name">07_test.py</span><span class="badge badge-green">测试</span></div>
+
+<h4>三种测试方式</h4>
+<table>
+<tr><th>方式</th><th>说明</th><th>代码</th></tr>
+<tr><td><strong>完整执行</strong></td><td>运行整个 Graph</td><td><code>graph.invoke(input)</code></td></tr>
+<tr><td><strong>单节点测试</strong></td><td>直接调用单个节点函数</td><td><code>node_fn(state)</code></td></tr>
+<tr><td><strong>部分执行</strong></td><td>用 <code>update_state</code> 模拟中间状态</td><td><code>graph.update_state(config, new_state)</code></td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>5.8 UI — Agent Chat 界面</h3>
+<div class="file-header"><span class="file-name">08_ui.py</span><span class="badge badge-purple">可视化</span></div>
+<p>与 LangGraph Studio / Agent Chat UI 兼容的聊天 Agent。</p>
+
+<h4>关键配置</h4>
+<ul>
+<li>State 使用 <code>add_messages</code> reducer 追加消息</li>
+<li>可本地测试也可通过 <code>langgraph dev</code> 启动 Studio</li>
+</ul>
+
+<pre><code>graph = (
+    StateGraph(State)
+    .add_node("chatbot", chatbot_node)
+    .add_edge(START, "chatbot")
+    .compile(checkpointer=MemorySaver())
+)
+
+# 启动方式
+# langgraph dev  → 打开 Studio UI</code></pre>
+</div>
+
+<div class="card">
+<h3>5.9 Functional API — 函数式工作流</h3>
+<div class="file-header"><span class="file-name">09_functional.py</span><span class="badge badge-orange">新范式</span></div>
+<p>与 Graph API 不同，用标准 Python 控制流（if/for）定义工作流，无需构建 State/Node/Edge。</p>
+
+<h4>核心概念</h4>
+<div class="grid">
+<div>
+<h4>@task</h4>
+<p>封装离散工作单元，结果可被 checkpoint 持久化。恢复时不重算。</p>
+<pre><code>@task
+def generate_topic_essay(topic: str) -> str:
+    time.sleep(0.5)
+    return f"关于「{topic}」的短文"</code></pre>
+</div>
+<div>
+<h4>@entrypoint</h4>
+<p>工作流入口，管理执行流、中断恢复、短期记忆。</p>
+<pre><code>@entrypoint(checkpointer=InMemorySaver())
+def essay_workflow(topic: str) -> dict:
+    essay = generate_topic_essay(topic).result()
+    is_approved = interrupt({"essay": essay})
+    return {"essay": essay, "is_approved": is_approved}</code></pre>
+</div>
+</div>
+
+<h4>短期记忆演示（previous 参数）</h4>
+<pre><code>@entrypoint(checkpointer=InMemorySaver())
+def accumulator(number: int, *, previous: int = None) -> int:
+    previous = previous or 0
+    return number + previous
+
+# 累加链: invoke(1)→1, invoke(2)→3, invoke(10)→13</code></pre>
+</div>
+</div>
+
+<!-- ====== Section 6: KMeans 聚类 ====== -->
+<div class="section" id="kmeans">
+<div class="section-title"><span class="icon">📈</span> 六、KMeans 聚类分析</div>
+
+<div class="card">
+<h3>6.1 用户查询聚类 Demo</h3>
+<div class="file-header"><span class="file-name">kmeans/kmeans_demo.py</span><span class="badge badge-blue">Embedding + KMeans + t-SNE</span></div>
+<p>展示如何使用 K-means 对用户查询进行语义聚类分析。</p>
+
+<h4>完整流程</h4>
+<div class="flow">
+<div class="flow-step">定义 16 个用户查询（4个类别）</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">智谱 AI embedding-3 模型向量化（1024维）</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">K-means 聚类（k=4）</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">t-SNE 降维到 2D</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-step">Matplotlib 可视化</div>
+</div>
+
+<h4>四个语义类别</h4>
+<div class="grid">
+<div>
+<h4>编程技术类</h4>
+<ul>
+<li>Python 二叉树遍历算法</li>
+<li>JavaScript 闭包原理</li>
+<li>MySQL 索引优化技巧</li>
+<li>Docker 部署 Spring Boot</li>
+</ul>
+</div>
+<div>
+<h4>美食烹饪类</h4>
+<ul>
+<li>红烧肉的做法</li>
+<li>四川麻婆豆腐</li>
+<li>番茄炒蛋秘诀</li>
+<li>意大利面酱汁</li>
+</ul>
+</div>
+<div>
+<h4>体育运动类</h4>
+<ul>
+<li>篮球三分投篮姿势</li>
+<li>足球世界杯历史</li>
+<li>网球反手击球</li>
+<li>自由泳换气技巧</li>
+</ul>
+</div>
+<div>
+<h4>旅游出行类</h4>
+<ul>
+<li>东京自由行攻略</li>
+<li>丽江古城注意事项</li>
+<li>埃菲尔铁塔门票</li>
+<li>三亚海景酒店</li>
+</ul>
+</div>
+</div>
+
+<h4>技术栈</h4>
+<div class="tag-row">
+<span class="badge badge-blue">智谱 AI Embedding</span>
+<span class="badge badge-green">scikit-learn KMeans</span>
+<span class="badge badge-purple">t-SNE 降维</span>
+<span class="badge badge-yellow">Matplotlib 可视化</span>
+</div>
+
+<h4>可视化输出</h4>
+<p><code>cluster_result.png</code> — 散点图展示 16 个查询在 2D 空间的聚类分布。</p>
+</div>
+</div>
+
+<!-- ====== Section 7: Common 工具包 ====== -->
+<div class="section" id="common">
+<div class="section-title"><span class="icon">🔧</span> 七、Common 工具包</div>
+
+<div class="grid">
+<div class="card">
+<h3>7.1 LLM 配置模块</h3>
+<div class="file-header"><span class="file-name">common/llm_config.py</span></div>
+<p>统一管理多 LLM 供应商的初始化。</p>
+
+<h4>支持的模型</h4>
+<table>
+<tr><th>方法</th><th>供应商</th><th>配置</th></tr>
+<tr><td><code>get_default_llm()</code></td><td>默认（环境变量）</td><td><code>MODEL</code></td></tr>
+<tr><td><code>get_deepseek_llm()</code></td><td>DeepSeek</td><td><code>DEEPSEEK_BASE_URL/KEY/MODEL</code></td></tr>
+<tr><td><code>get_zhipu_llm()</code></td><td>智谱 AI</td><td><code>ZHIPUAI_BASE_URL/KEY/MODEL</code></td></tr>
+</table>
+
+<h4>智谱适配器</h4>
+<pre><code>class ChatZhipuAIAdapt(ChatZhipuAI):
+    def bind_tools(self, tools, **kwargs):
+        kwargs["tool_choice"] = "auto"
+        return super().bind_tools(tools, **kwargs)</code></pre>
+</div>
+
+<div class="card">
+<h3>7.2 追踪处理器</h3>
+<div class="file-header"><span class="file-name">common/trace_handler.py</span><span class="badge badge-green">可观测性</span></div>
+<p>LLMTraceHandler — 追踪 LLM 和 Tool 调用过程的回调处理器。</p>
+
+<h4>功能</h4>
+<ul>
+<li><code>on_llm_start</code>：显示 LLM 输入、Tools schema</li>
+<li><code>on_llm_end</code>：显示 LLM 文本响应 + Tool 调用</li>
+<li><code>on_tool_end</code>：显示工具执行结果</li>
+</ul>
+
+<h4>配置选项</h4>
+<table>
+<tr><th>参数</th><th>说明</th><th>默认</th></tr>
+<tr><td><code>multiline</code></td><td>多行详细输出</td><td>False</td></tr>
+<tr><td><code>show_tools</code></td><td>显示工具 schema</td><td>False</td></tr>
+<tr><td><code>show_prompt</code></td><td>显示完整 prompt</td><td>False</td></tr>
+<tr><td><code>max_length</code></td><td>文本最大显示长度</td><td>100</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>7.3 流式可视化器</h3>
+<div class="file-header"><span class="file-name">common/stream_visualizer.py</span><span class="badge badge-purple">流式</span></div>
+<p>StreamVisualizer — 直观显示 Agent 流式输出。</p>
+
+<h4>支持的三种模式</h4>
+<ul>
+<li><code>_show_updates</code>：显示 Agent 步骤更新（LLM/Tool/ToolResult）</li>
+<li><code>_show_messages</code>：显示 LLM Token 逐字输出</li>
+<li><code>_show_custom</code>：显示自定义消息</li>
+</ul>
+
+<h4>便捷函数</h4>
+<pre><code>visualize_stream(
+    agent,
+    input_data={"messages": [...]},
+    stream_mode="messages"  # updates / messages / custom
+)</code></pre>
+</div>
+</div>
+
+<!-- ====== Section 8: LangGraph Test 项目 ====== -->
+<div class="section">
+<div class="section-title"><span class="icon">🧪</span> 八、LangGraph Server 模板项目</div>
+
+<div class="card">
+<h3>langgraph_test — LangGraph Server 起手模板</h3>
+<p>基于 LangGraph 官方模板的 Server 项目，适合快速启动带可视化调试的 Agent 服务。</p>
+
+<h4>项目结构</h4>
+<pre><code>langgraph_test/
+├── src/agent/graph.py     # 核心 Graph 定义
+├── langgraph.json         # Server 配置（SQLite checkpointer）
+├── pyproject.toml         # 项目依赖
+└── .env.example           # 环境变量模板</code></pre>
+
+<h4>核心代码 (graph.py)</h4>
+<pre><code>class Context(TypedDict):
+    my_configurable_param: str
+
+@dataclass
+class State:
+    changeme: str = "example"
+
+async def call_model(state: State, runtime: Runtime[Context]):
+    return {"changeme": f"output. Configured with {runtime.context}"}
+
+graph = (
+    StateGraph(State, context_schema=Context)
+    .add_node(call_model)
+    .add_edge("__start__", "call_model")
+    .compile(name="New Graph")
+)</code></pre>
+
+<h4>启动方式</h4>
+<pre><code># 安装依赖
+pip install -e . "langgraph-cli[inmem]"
+
+# 启动 LangGraph Server
+langgraph dev
+
+# 打开 LangGraph Studio UI 进行可视化调试</code></pre>
+</div>
+</div>
+
+<!-- ====== Footer ====== -->
+<div style="text-align:center;padding:40px 0 20px;border-top:1px solid var(--border);margin-top:40px">
+<p style="color:var(--text2)">📚 AI Agent 学习之旅 — 理论 + 实战完整总结</p>
+<p style="color:var(--text2);font-size:0.85em;margin-top:8px">
+涵盖：学习规划 · ReAct 范式 · 架构设计 · 框架对比 · LangChain · LangGraph · KMeans · RAG · MCP
+</p>
+<p style="color:var(--text2);font-size:0.8em;margin-top:8px">Generated on 2026-03-28</p>
+</div>
+
+</div><!-- end container -->
+</body>
+</html>
+</div>
+</body>
+</html>
