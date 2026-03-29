@@ -28,7 +28,7 @@ def get_default_llm(**kwargs):
     )
 
 def get_deepseek_llm(**kwargs):
-    print(f"初始化DeepSeek模型(base_url:{deepseek_api_base}, model={deepseek_api_key})")
+    print(f"初始化DeepSeek模型(base_url:{deepseek_api_base}, model={deepseek_model})")
     return init_chat_model(
         base_url=deepseek_api_base,
         api_key=deepseek_api_key,
