@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthropic Harness 设计报告 | 长时运行 Agentic Coding 关键要点与作者心路历程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --tw-color-primary: #00d4ff;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .title-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(90deg, #0a1729, #1a2a4a);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .section-header {
+            position: relative;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            width: 48px;
+            height: 3px;
+            background: #00d4ff;
+            bottom: -4px;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <!-- 顶部导航栏 -->
+    <nav class="header-gradient sticky top-0 z-50 border-b border-slate-700">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-cyan-400 rounded-2xl flex items-center justify-center text-slate-950 font-bold text-xl">A</div>
+                <h1 class="title-font text-2xl font-semibold tracking-tight">Anthropic Harness 设计</h1>
+            </div>
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="#keypoints" class="hover:text-cyan-400 transition-colors">关键要点</a>
+                <a href="#journey" class="hover:text-cyan-400 transition-colors">作者心路历程</a>
+                <a href="#summary" class="hover:text-cyan-400 transition-colors">整体总结</a>
+                <a href="#learning" class="hover:text-cyan-400 transition-colors">学习启示</a>
+                <div class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-3xl text-xs font-mono tracking-widest flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    2026.3.24 文章精华
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <header class="header-gradient py-16">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 bg-slate-800 text-cyan-400 text-sm font-medium px-6 py-2 rounded-3xl mb-6 border border-slate-600">
+                📘 Anthropic Labs 官方工程报告
+            </div>
+            <h1 class="title-font text-6xl font-semibold tracking-tighter leading-none mb-4">
+                Harness 设计<br>让 Claude 实现<br>多小时自主全栈开发
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                从前端审美到长时编码的跨领域突破<br>
+                GAN 启发的多代理架构 + 动态简化 = 真正可落地的 Agentic Coding 框架
+            </p>
+            <div class="mt-10 flex items-center justify-center gap-4">
+                <div class="flex -space-x-4">
+                    <div class="w-8 h-8 bg-cyan-400 rounded-2xl flex items-center justify-center text-xs font-bold border-2 border-slate-950">G</div>
+                    <div class="w-8 h-8 bg-purple-400 rounded-2xl flex items-center justify-center text-xs font-bold border-2 border-slate-950">E</div>
+                </div>
+                <p class="text-sm text-slate-400">Generator + Evaluator 双核驱动</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        
+        <!-- 关键要点 -->
+        <section id="keypoints" class="mb-20">
+            <div class="flex items-center gap-3 mb-8">
+                <span class="text-cyan-400 text-3xl">🔥</span>
+                <h2 class="section-header text-4xl font-semibold tracking-tight">关键要点总结</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- 要点1 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-9 h-9 flex-shrink-0 bg-cyan-400 text-slate-950 rounded-2xl flex items-center justify-center font-bold text-2xl">1</div>
+                        <div>
+                            <h3 class="font-semibold text-2xl mb-3">Harness 设计是 Agentic Coding 前沿性能的核心</h3>
+                            <p class="text-slate-300 leading-relaxed">不是简单 Prompt Engineering，而是系统级框架创新，能显著突破 Claude 在长期自主任务中的天花板。</p>
+                            <div class="mt-6 text-xs font-mono bg-slate-800 px-4 py-2 rounded-2xl inline-block">模型能力 × 框架设计 = 实际边界</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 要点2 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-9 h-9 flex-shrink-0 bg-purple-400 text-slate-950 rounded-2xl flex items-center justify-center font-bold text-2xl">2</div>
+                        <div>
+                            <h3 class="font-semibold text-2xl mb-3">跨领域通用方法：GAN 式 Generator + Evaluator</h3>
+                            <p class="text-slate-300 leading-relaxed">前端设计（主观审美）与长时全栈编码（可验证正确性），用同一套结构解决。<br>将主观判断转化为具体、可评分标准，形成外部批判反馈闭环。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 要点3 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-9 h-9 flex-shrink-0 bg-amber-400 text-slate-950 rounded-2xl flex items-center justify-center font-bold text-2xl">3</div>
+                        <div>
+                            <h3 class="font-semibold text-2xl mb-3">长时任务两大痛点及解法</h3>
+                            <ul class="space-y-4 text-slate-300">
+                                <li class="flex gap-3"><span class="text-emerald-400">①</span> 上下文焦虑 + coherence 丢失 → Context Reset + 结构化 Handoff</li>
+                                <li class="flex gap-3"><span class="text-emerald-400">②</span> Self-evaluation 偏差 → 分离 Generator 与 Evaluator，独立调优 Skeptical Evaluator</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 要点4 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-9 h-9 flex-shrink-0 bg-pink-400 text-slate-950 rounded-2xl flex items-center justify-center font-bold text-2xl">4</div>
+                        <div>
+                            <h3 class="font-semibold text-2xl mb-3">前端实验核心细节</h3>
+                            <p class="text-slate-300">4 项 Grading Criteria（设计质量、原创性、工艺、功能性），重点惩罚「AI slop」。<br>Playwright 实时交互 + 5~15 次迭代，最长 4 小时。<br>成果：出现 Creative Leap（如荷兰博物馆 3D 空间体验）。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 要点5 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 card-hover col-span-2 md:col-span-1">
+                    <div class="flex items-start gap-4">
+                        <div class="w-9 h-9 flex-shrink-0 bg-teal-400 text-slate-950 rounded-2xl flex items-center justify-center font-bold text-2xl">5</div>
+                        <div>
+                            <h3 class="font-semibold text-2xl mb-3">全栈三代理架构</h3>
+                            <div class="grid grid-cols-3 gap-4 text-sm mt-6">
+                                <div class="bg-slate-800 p-4 rounded-2xl text-center">Planner<br><span class="text-xs text-slate-400">扩展完整 Spec</span></div>
+                                <div class="bg-slate-800 p-4 rounded-2xl text-center">Generator<br><span class="text-xs text-slate-400">Feature-by-Feature Sprint</span></div>
+                                <div class="bg-slate-800 p-4 rounded-2xl text-center">Evaluator<br><span class="text-xs text-slate-400">Sprint Contract + Playwright 测试</span></div>
+                            </div>
+                            <p class="mt-6 text-xs bg-slate-800 inline-block px-5 py-3 rounded-3xl">实验对比：Solo（20min $9，功能残缺） vs Harness（6h $200，polished 可玩）</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 要点6 -->
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-9 h-9 flex-shrink-0 bg-violet-400 text-slate-950 rounded-2xl flex items-center justify-center font-bold text-2xl">6</div>
+                        <div>
+                            <h3 class="font-semibold text-2xl mb-3">动态迭代与未来</h3>
+                            <p class="text-slate-300">随模型升级（Sonnet 4.5 → Opus 4.6）自动简化 Harness。<br>三大教训：持续实验、分解任务、每发布新模型都重新审视。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 整体总结 -->
+        <section id="summary" class="mb-20 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-3xl p-12">
+            <h2 class="text-3xl font-semibold mb-6 flex items-center gap-3">
+                <span>📊</span> 整体总结
+            </h2>
+            <p class="text-lg leading-relaxed text-slate-300 max-w-3xl">
+                本文是一篇 AI 工程方法论案例：<strong>通过 GAN 启发的多代理 + 结构化 Criteria + Context Reset</strong>，让 Claude 在多小时自主全栈开发中实现质的飞跃。<br><br>
+                成本虽高，但质量提升「immediately apparent」。最大启示是：<strong>框架设计与模型能力同等重要</strong>。工程师应把精力放在「外部批判闭环」和「动态简化」上，而非等待下一代模型。
+            </p>
+        </section>
+
+        <!-- 作者心路历程 -->
+        <section id="journey" class="mb-20">
+            <div class="flex items-center gap-3 mb-8">
+                <span class="text-cyan-400 text-3xl">🧠</span>
+                <h2 class="section-header text-4xl font-semibold tracking-tight">作者 Prithvi Rajasekaran 的心路历程</h2>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="flex gap-8">
+                    <div class="w-12 text-right font-mono text-cyan-400 text-xl font-semibold">01</div>
+                    <div class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl p-8">
+                        <h4 class="font-semibold text-xl mb-2">起点：受挫与困惑</h4>
+                        <p class="text-slate-400">几个月前在 frontend design skill 和 long-running coding harness 上，Prompt Engineering 已远超 baseline，却双双撞上天花板（审美平庸 + 长时脱轨）。</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8">
+                    <div class="w-12 text-right font-mono text-cyan-400 text-xl font-semibold">02</div>
+                    <div class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl p-8">
+                        <h4 class="font-semibold text-xl mb-2">转折：寻找通用解法</h4>
+                        <p class="text-slate-400">主动寻找跨主观与客观领域的 AI 工程方法，发现 GAN 的 Generator-Evaluator 结构能同时解决审美与代码问题。</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8">
+                    <div class="w-12 text-right font-mono text-cyan-400 text-xl font-semibold">03</div>
+                    <div class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl p-8">
+                        <h4 class="font-semibold text-xl mb-2">实验高潮：从理论到落地</h4>
+                        <p class="text-slate-400">先在 frontend 验证 4 条 Criteria + 实时 Evaluator，亲眼看到 Creative Leap；再迁移到全栈，跑出 6 小时 Retro 游戏和 4 小时 DAW 真实成果。</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8">
+                    <div class="w-12 text-right font-mono text-cyan-400 text-xl font-semibold">04</div>
+                    <div class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl p-8">
+                        <h4 class="font-semibold text-xl mb-2">反思升华：动态与谦逊</h4>
+                        <p class="text-slate-400">随 Opus 4.6 发布立即简化 Harness，得出结论：harness 空间永远存在、只会迁移。<br>整个历程充满工程师式的务实、好奇与谦逊。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 学习启示 -->
+        <section id="learning" class="mb-16">
+            <h2 class="section-header text-4xl font-semibold tracking-tight mb-8">🎓 给你作为学习者的 5 大启示</h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border border-slate-700">
+                    <div class="text-4xl mb-4">🔬</div>
+                    <p class="font-medium">1. 实验优先</p>
+                    <p class="text-xs text-slate-400 mt-2">先在小领域验证，再 scale 到复杂任务</p>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border border-slate-700">
+                    <div class="text-4xl mb-4">🧩</div>
+                    <p class="font-medium">2. 分解 + 外部反馈</p>
+                    <p class="text-xs text-slate-400 mt-2">永远不要让模型自我评价</p>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border border-slate-700">
+                    <div class="text-4xl mb-4">📏</div>
+                    <p class="font-medium">3. 把主观变成可评分</p>
+                    <p class="text-xs text-slate-400 mt-2">用 Criteria 把 taste 工程化</p>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border border-slate-700">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <p class="font-medium">4. Harness 要动态演进</p>
+                    <p class="text-xs text-slate-400 mt-2">模型升级 = 简化框架</p>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border border-slate-700">
+                    <div class="text-4xl mb-4">🌐</div>
+                    <p class="font-medium">5. 框架永远重要</p>
+                    <p class="text-xs text-slate-400 mt-2">模型进步不会让 harness 消失，只会迁移</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="border-t border-slate-700 pt-8 text-xs text-slate-400 flex flex-col md:flex-row justify-between items-center gap-4 max-w-6xl mx-auto px-6">
+            <div>
+                基于 Anthropic 官方文章《Harness design for long-running application development》<br>
+                精华提炼 · 适合深度学习与复现使用
+            </div>
+            <div class="flex items-center gap-6 text-[10px] font-mono">
+                <span>Prithvi Rajasekaran</span>
+                <span class="w-px h-3 bg-slate-600"></span>
+                <span>2026.3.24</span>
+                <span class="w-px h-3 bg-slate-600"></span>
+                <span>由 Grok 整理为可学习 HTML 报告</span>
+            </div>
+            <button onclick="window.print()" 
+                    class="px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-3xl text-xs font-medium flex items-center gap-2">
+                🖨️ 打印 / 保存为 PDF
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        // Tailwind 脚本初始化
+        function initializeTailwind() {
+            return {
+                config(userConfig = {}) {
+                    return {
+                        content: [],
+                        theme: {
+                            extend: {},
+                        },
+                        plugins: [],
+                        ...userConfig,
+                    }
+                },
+                theme(userConfig = {}) {
+                    return {
+                        config(userConfig = {}) {
+                            return {
+                                content: [],
+                                theme: {
+                                    extend: {},
+                                },
+                                plugins: [],
+                                ...userConfig,
+                            }
+                        },
+                        theme: {
+                            extend: {},
+                        },
+                        plugins: [],
+                        ...userConfig,
+                    }
+                },
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const config = initializeTailwind().config({
+                theme: {
+                    extend: {},
+                },
+            })
+            return {
+                configUserTheme: () => {
+                    return {
+                        configUser: config,
+                    }
+                },
+            }
+        })
+    </script>
+</body>
+</html>

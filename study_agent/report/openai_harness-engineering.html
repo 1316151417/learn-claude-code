@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harness Engineering — Codex 智能体优先工程学习报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        .title-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 280px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+        .main-content {
+            margin-left: 280px;
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        .toc-link {
+            transition: all 0.2s ease;
+        }
+        .toc-link:hover {
+            transform: translateX(8px);
+        }
+        .section {
+            scroll-margin-top: 80px;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border-left: 5px solid #10b981;
+        }
+    </style>
+</head>
+<body class="bg-zinc-50 text-zinc-800">
+
+    <!-- 顶部导航栏 -->
+    <header class="bg-white border-b border-zinc-200 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" 
+                        class="lg:hidden p-2 rounded-xl hover:bg-zinc-100 transition-colors">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+                <div>
+                    <h1 class="title-font text-3xl font-semibold tracking-tight text-emerald-700">
+                        Harness Engineering
+                    </h1>
+                    <p class="text-sm text-zinc-500">Codex 在智能体优先世界中的实践</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-sm">
+                <a href="#takeaways" 
+                   class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-medium transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-bolt"></i>
+                    核心学习要点
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex max-w-screen-2xl mx-auto">
+
+        <!-- 侧边栏目录（可折叠） -->
+        <div id="sidebar" class="sidebar bg-white border-r border-zinc-200 shadow-xl pt-8 px-6">
+            <div class="mb-10">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-9 h-9 bg-emerald-100 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-robot text-emerald-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-emerald-700">OpenAI 内部实践</p>
+                        <p class="text-xs text-zinc-400">2026 年 2 月</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="space-y-1 text-sm">
+                <a href="#section1" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-flag w-5"></i>
+                    <span>1. 实验起点与成果</span>
+                </a>
+                <a href="#section2" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-user-gear w-5"></i>
+                    <span>2. 人类角色彻底转变</span>
+                </a>
+                <a href="#section3" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-eye w-5"></i>
+                    <span>3. 智能体可读性革命</span>
+                </a>
+                <a href="#section4" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-map w-5"></i>
+                    <span>4. 文档 = 地图而非百科</span>
+                </a>
+                <a href="#section5" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-layer-group w-5"></i>
+                    <span>5. 架构强制与品味</span>
+                </a>
+                <a href="#section6" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-rocket w-5"></i>
+                    <span>6. 高吞吐量新流程</span>
+                </a>
+                <a href="#section7" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-loop w-5"></i>
+                    <span>7. Ralph Wiggum 循环</span>
+                </a>
+                <a href="#section8" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900">
+                    <i class="fa-solid fa-broom w-5"></i>
+                    <span>8. 熵与垃圾收集</span>
+                </a>
+                <a href="#takeaways" onclick="toggleSidebar()" class="toc-link flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-100 text-emerald-700 font-semibold mt-8 border-t border-zinc-100 pt-8">
+                    <i class="fa-solid fa-star w-5"></i>
+                    <span>核心学习要点 + 行动清单</span>
+                </a>
+            </nav>
+
+            <div class="absolute bottom-8 left-6 right-6 text-xs text-zinc-400">
+                <p>基于 OpenAI 官方文章整理</p>
+                <p class="mt-1">专为深度学习设计 • 干净 · 现代 · 可打印</p>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <main class="main-content flex-1 min-w-0 pb-20">
+
+            <div class="max-w-3xl mx-auto px-8 pt-12">
+
+                <!-- 开头摘要 -->
+                <div class="highlight-box rounded-3xl p-10 mb-16">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="px-4 py-1.5 bg-white rounded-2xl text-emerald-700 text-sm font-medium inline-flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-sparkles"></i>
+                            2026 年 OpenAI 真实内部实践
+                        </div>
+                    </div>
+                    <h2 class="text-4xl title-font font-semibold leading-tight tracking-tight mb-6">
+                        人类零行手动代码，<br>
+                        Codex 独立构建 100 万行产品
+                    </h2>
+                    <p class="text-xl text-zinc-600 leading-relaxed">
+                        这不是 AI 辅助编程，而是彻底的<strong>智能体优先（Agent-First）</strong>开发范式。<br>
+                        人类从“写代码的人”转变为“设计 AI 高效工作环境（Harness）的人”。
+                    </p>
+                </div>
+
+                <!-- 正文部分 -->
+                <section id="section1" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">01</span>
+                        实验起点与惊人成果
+                    </h2>
+                    <p class="text-lg leading-relaxed text-zinc-700">
+                        2025 年 8 月，从一个空的 Git 仓库开始，所有代码、架构、测试、文档全部由 Codex 生成，人类<strong>零行手动编写</strong>。
+                    </p>
+                    <div class="mt-8 bg-white rounded-3xl p-8 border border-zinc-100">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="text-center">
+                                <div class="text-5xl font-semibold text-emerald-600">100万</div>
+                                <div class="text-zinc-500 mt-2">行代码</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-5xl font-semibold text-emerald-600">1500</div>
+                                <div class="text-zinc-500 mt-2">个 PR</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-5xl font-semibold text-emerald-600">数百</div>
+                                <div class="text-zinc-500 mt-2">内测用户</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-8 text-zinc-600">团队从 3 人扩大到 7 人，人均生产力反而显著提升。</p>
+                </section>
+
+                <section id="section2" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">02</span>
+                        人类角色彻底转变
+                    </h2>
+                    <div class="prose prose-zinc max-w-none text-lg">
+                        <p>工程师不再亲自写代码，而是：</p>
+                        <ul class="list-disc pl-6 space-y-3 mt-6">
+                            <li>拆解产品目标</li>
+                            <li>设计工具与抽象层</li>
+                            <li>定义意图与反馈回路</li>
+                            <li>构建让 Codex 能可靠工作的“Harness”（缰绳系统）</li>
+                        </ul>
+                    </div>
+                    <div class="mt-10 p-8 bg-white border border-zinc-100 rounded-3xl">
+                        <p class="italic text-xl leading-relaxed text-zinc-600">
+                            “纪律仍然存在，只是位置变了——从代码层面转移到了支撑结构（工具、规范、反馈）。”
+                        </p>
+                    </div>
+                </section>
+
+                <section id="section3" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">03</span>
+                        智能体可读性革命
+                    </h2>
+                    <p class="text-lg text-zinc-700">
+                        最大瓶颈不再是模型能力，而是<strong>环境对 AI 是否可读</strong>。
+                    </p>
+                    <ul class="mt-8 space-y-6">
+                        <li class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-2xl flex items-center justify-center text-xl">📸</div>
+                            <div>
+                                <strong>Chrome DevTools 协议</strong>：AI 可直接截图、操作 UI、复现 bug
+                            </div>
+                        </li>
+                        <li class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-2xl flex items-center justify-center text-xl">📊</div>
+                            <div>
+                                <strong>可观测性栈</strong>：LogQL 查询日志 + PromQL 查询指标
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="mt-10 bg-amber-50 border border-amber-200 rounded-2xl p-7 text-amber-800">
+                        成果：单个 Codex 任务可连续自主运行 6 小时以上，常在人类睡觉时完成工作。
+                    </p>
+                </section>
+
+                <section id="section4" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">04</span>
+                        文档 = 地图而非百科全书
+                    </h2>
+                    <p class="text-lg">放弃又长又乱的 AGENTS.md，改为：</p>
+                    <div class="mt-8 bg-zinc-900 text-zinc-100 p-8 rounded-3xl font-mono text-sm">
+                        AGENTS.md（仅 ~100 行目录）<br>
+                        docs/<br>
+                        　├── design-docs/<br>
+                        　├── exec-plans/<br>
+                        　├── product-specs/<br>
+                        　└── ARCHITECTURE.md
+                    </div>
+                    <p class="mt-6 text-zinc-600">给 AI 一张清晰的地图，而不是 1000 页容易过时的说明书。</p>
+                </section>
+
+                <section id="section5" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">05</span>
+                        架构必须机械强制
+                    </h2>
+                    <p class="text-lg">严格分层架构（Types → Config → Repo → Service → Runtime → UI），通过自定义 linter + 结构测试自动检查执行。</p>
+                </section>
+
+                <section id="section6" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">06</span>
+                        高吞吐量下的新流程
+                    </h2>
+                    <p class="text-lg">PR 极快迭代，审查逐步变为 agent-to-agent，人类仅在关键决策时介入。</p>
+                </section>
+
+                <section id="section7" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">07</span>
+                        Ralph Wiggum 循环
+                    </h2>
+                    <p class="text-lg">AI 自己生成代码 → 自己审查 → 响应反馈 → 反复迭代，直到所有 AI 审查员通过。</p>
+                </section>
+
+                <section id="section8" class="section mb-20">
+                    <h2 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                        <span class="text-emerald-500 text-4xl">08</span>
+                        最大挑战：熵与垃圾收集
+                    </h2>
+                    <p class="text-lg">AI 容易复制坏模式，导致代码逐渐腐烂。必须建立后台“垃圾收集”智能体，定期扫描并发起清理 PR。</p>
+                </section>
+
+                <!-- 核心学习要点 -->
+                <section id="takeaways" class="section pt-12 border-t border-zinc-200">
+                    <h2 class="text-4xl title-font font-semibold mb-10 text-center">核心学习要点</h2>
+                    
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-3xl p-8 shadow-sm border border-zinc-100">
+                            <div class="flex items-start gap-6">
+                                <div class="text-5xl text-emerald-400">1</div>
+                                <div>
+                                    <h3 class="font-semibold text-xl mb-3">Harness 的本质</h3>
+                                    <p class="text-zinc-600">不是更好的 Prompt，而是构建让 AI 可靠自主工作的完整环境（工具、可读性、强制规则、反馈回路）。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-8 shadow-sm border border-zinc-100">
+                            <div class="flex items-start gap-6">
+                                <div class="text-5xl text-emerald-400">2</div>
+                                <div>
+                                    <h3 class="font-semibold text-xl mb-3">可读性是核心竞争力</h3>
+                                    <p class="text-zinc-600">UI、日志、指标、架构、文档都必须专门为智能体优化。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-8 shadow-sm border border-zinc-100">
+                            <div class="flex items-start gap-6">
+                                <div class="text-5xl text-emerald-400">3</div>
+                                <div>
+                                    <h3 class="font-semibold text-xl mb-3">持续垃圾收集机制</h3>
+                                    <p class="text-zinc-600">AI 会制造熵，必须有专用智能体定期清理漂移代码。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-16 bg-emerald-700 text-white rounded-3xl p-12">
+                        <h3 class="text-2xl font-semibold mb-8">立即可以做的行动清单</h3>
+                        <ol class="space-y-6 list-decimal pl-6 text-lg">
+                            <li>把你的 AGENTS.md 改成简短目录 + docs/ 结构化文件夹</li>
+                            <li>定义 3–5 条核心架构规则，并尝试用 linter 强制执行</li>
+                            <li>让 AI 更容易访问日志和界面（即使先从截图开始）</li>
+                            <li>建立每周一次的“代码清理 PR”机制</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <footer class="mt-24 text-center text-zinc-400 text-sm pb-12">
+                    <p>本报告专为学习设计 • 干净现代排版 • 支持移动端阅读</p>
+                    <p class="mt-2">建议：保存为 PDF 或打印，边读边在旁边写下你的应用计划。</p>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // 点击主内容区域自动收起移动端侧边栏
+        document.querySelector('main').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
